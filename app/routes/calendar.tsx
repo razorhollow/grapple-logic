@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, json } from '@remix-run/node';
-import { useLoaderData, Link } from '@remix-run/react';
+import { Link, Outlet, useLoaderData } from '@remix-run/react';
 import {
     addDays,
     format,
@@ -14,7 +14,7 @@ import { prisma } from '~/db.server';
 
 function getNextClassDate(date: Date): Date {
     const classDays = [1, 3, 5]; // Monday, Wednesday, Friday
-    let nextDate = addDays(date, 1);
+    let nextDate = date;
     while (!classDays.includes(getDay(nextDate))) {
         nextDate = addDays(nextDate, 1);
     }
@@ -53,20 +53,48 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     const classDaysOfWeek = [1, 3, 5]; // Monday, Wednesday, Friday
 
-    const days = daysArray.map((day) => {
-        const isToday = isSameDay(day, now);
-        const isClassDay = classDaysOfWeek.includes(getDay(day));
-        return {
-            date: format(day, 'yyyy-MM-dd'),
-            dayNumber: format(day, 'd'),
-            isToday,
-            isClassDay,
-        };
+    // Calculate the day of the week the month starts on
+    const startDayOfWeek = getDay(startDate); // 0 (Sunday) to 6 (Saturday)
+
+    // Create empty cells for days before the first day of the month
+    const emptyStartDays = Array.from({ length: startDayOfWeek }, () => null);
+
+    // Calculate the number of weeks in the month view (at least 5)
+    const totalDays = emptyStartDays.length + daysArray.length;
+    const totalWeeks = Math.ceil(totalDays / 7);
+    const totalCells = totalWeeks * 7;
+
+    // Create empty cells for days after the last day of the month
+    const emptyEndDays = Array.from({ length: totalCells - totalDays }, () => null);
+
+    // Combine empty start days, actual days, and empty end days
+    const calendarDays = [...emptyStartDays, ...daysArray, ...emptyEndDays];
+
+    const days = calendarDays.map((day) => {
+        if (day === null) {
+            return {
+                date: null,
+                dayNumber: null,
+                isToday: false,
+                isClassDay: false,
+            };
+        } else {
+            const isToday = isSameDay(day, now);
+            const isClassDay = classDaysOfWeek.includes(getDay(day));
+            return {
+                date: format(day, 'yyyy-MM-dd'),
+                dayNumber: format(day, 'd'),
+                isToday,
+                isClassDay,
+            };
+        }
     });
 
     const dayReviews: Record<string, string[]> = {};
     for (const day of days) {
-        dayReviews[day.date] = [];
+        if (day.date) {
+            dayReviews[day.date] = [];
+        }
     }
     for (const review of reviews) {
         if (dayReviews[review.date]) {
@@ -76,6 +104,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     return json({ days, dayReviews });
 }
+
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
@@ -101,21 +130,23 @@ export default function Calendar() {
                     </div>
                     <div className="isolate mt-2 grid grid-cols-7 gap-px bg-gray-200 text-sm shadow ring-1 ring-gray-200">
                         {days.map((day) => (
-                            <div
+                            <Link
                                 key={day.date}
+                                to={`/calendar/${day.date}`}
                                 className={classNames(
                                     'py-1.5 text-center',
                                     day.isToday ? 'bg-indigo-200' : 'bg-white',
-                                    day.isClassDay ? 'font-semibold' : 'text-gray-400'
+                                    day.isClassDay ? 'font-semibold' : 'text-gray-400',
+                                    'hover:bg-gray-100'
                                 )}
                             >
                                 <time dateTime={day.date}>{day.dayNumber}</time>
                                 {dayReviews[day.date]?.length > 0 ? <ul className="mt-1 text-xs text-gray-700">
-                                    {dayReviews[day.date].map((technique, idx) => (
-                                        <li key={idx}>{technique}</li>
-                                    ))}
-                                </ul> : null}
-                            </div>
+                                        {dayReviews[day.date].map((technique, idx) => (
+                                            <li key={idx}>{technique}</li>
+                                        ))}
+                                    </ul> : null}
+                            </Link>
                         ))}
                     </div>
                     <Link
@@ -126,6 +157,7 @@ export default function Calendar() {
                     </Link>
                 </div>
             </div>
+            <Outlet />
         </div>
     );
 }
