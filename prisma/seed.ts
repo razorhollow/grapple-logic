@@ -4,14 +4,18 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function seed() {
-  const email = "rachel@remix.run";
-
+  const email = "rob@razorhollow.com";
+  console.log('Cleaning up the existing database...🧹')
   // cleanup the existing database
-  await prisma.user.delete({ where: { email } }).catch(() => {
+  await prisma.user.deleteMany({}).catch(() => {
     // no worries if it doesn't exist yet
   });
 
-  const hashedPassword = await bcrypt.hash("racheliscool", 10);
+  await prisma.technique.deleteMany({});
+  await prisma.note.deleteMany({});
+  console.log('Database cleaned up. 🧹')
+
+  const hashedPassword = await bcrypt.hash("lexilovesyou", 10);
 
   const user = await prisma.user.create({
     data: {
@@ -48,9 +52,11 @@ async function seed() {
         category: "Back Control",
         videoLink: null,
         lastIntroduced: new Date("2024-06-17"),
+        userId: user.id,
       },
       {
         name: "Side Scissor to Armbar / Triangle",
+        userId: user.id,
         description: "",
         category: "Guard",
         videoLink: null,
@@ -62,6 +68,7 @@ async function seed() {
         category: "Back Control",
         videoLink: null,
         lastIntroduced: new Date("2024-06-21"),
+        userId: user.id,
       },
       {
         name: "Cross Collar Choke",
@@ -69,6 +76,7 @@ async function seed() {
         category: "Closed Guard",
         videoLink: null,
         lastIntroduced: new Date("2024-06-24"),
+        userId: user.id,
       },
       {
         name: "Wizzer Trap Sequence",
@@ -76,6 +84,7 @@ async function seed() {
         category: "Closed Guard",
         videoLink: null,
         lastIntroduced: new Date("2024-06-26"),
+        userId: user.id,
       },
       {
         name: "Clamp Armbar",
@@ -83,6 +92,7 @@ async function seed() {
         category: "Closed Guard",
         videoLink: null,
         lastIntroduced: new Date("2024-06-28"),
+        userId: user.id,
       },
       {
         name: "Americana",
@@ -90,6 +100,7 @@ async function seed() {
         category: "Mount",
         videoLink: null,
         lastIntroduced: new Date("2024-07-01"),
+        userId: user.id,
       },
       {
         name: "Cross Collar Choke",
@@ -97,6 +108,7 @@ async function seed() {
         category: "Mount",
         videoLink: null,
         lastIntroduced: new Date("2024-07-03"),
+        userId: user.id,
       },
       {
         name: "Armbar / Triangle Gauging Reactions",
@@ -104,6 +116,7 @@ async function seed() {
         category: "Mount",
         videoLink: null,
         lastIntroduced: new Date("2024-07-05"),
+        userId: user.id,
       },
       {
         name: "Kata Gatame",
@@ -111,6 +124,7 @@ async function seed() {
         category: "Side Control",
         videoLink: null,
         lastIntroduced: new Date("2024-07-08"),
+        userId: user.id,
       },
       {
         name: "Scarf Choke and Progression",
@@ -118,6 +132,7 @@ async function seed() {
         category: "Side Control",
         videoLink: null,
         lastIntroduced: new Date("2024-07-10"),
+        userId: user.id,
       },
       {
         name: "Armbar / Kimura",
@@ -125,6 +140,7 @@ async function seed() {
         category: "North South",
         videoLink: null,
         lastIntroduced: new Date("2024-07-12"),
+        userId: user.id,
       },
       {
         name: "Toreando and Jimmy Pass",
@@ -132,6 +148,7 @@ async function seed() {
         category: "Guard Passing",
         videoLink: null,
         lastIntroduced: new Date("2024-07-15"),
+        userId: user.id,
       },
       {
         name: "Over/Under and Stack Pass",
@@ -139,6 +156,7 @@ async function seed() {
         category: "Guard Passing",
         videoLink: null,
         lastIntroduced: new Date("2024-07-17"),
+        userId: user.id,
       },
       {
         name: "Double Under / Double Under Back Take",
@@ -146,6 +164,7 @@ async function seed() {
         category: "Guard Passing",
         videoLink: null,
         lastIntroduced: new Date("2024-07-19"),
+        userId: user.id,
       },
       {
         name: "DLR Guard Sweep Options (Basic, Getup, Crab Ride)",
@@ -153,6 +172,7 @@ async function seed() {
         category: "De La Riva Guard",
         videoLink: null,
         lastIntroduced: new Date("2024-07-22"),
+        userId: user.id,
       },
       {
         name: "Baited Sweep",
@@ -160,6 +180,7 @@ async function seed() {
         category: "Spider Guard",
         videoLink: null,
         lastIntroduced: new Date("2024-07-24"),
+        userId: user.id,
       },
       {
         name: "Hip Kick Sweep",
@@ -167,6 +188,7 @@ async function seed() {
         category: "Lasso Guard",
         videoLink: null,
         lastIntroduced: new Date("2024-07-26"),
+        userId: user.id,
       },
       {
         name: "Triangle Tips and Tricks",
@@ -174,6 +196,7 @@ async function seed() {
         category: "Closed Guard",
         videoLink: null,
         lastIntroduced: new Date("2024-07-29"),
+        userId: user.id,
       },
       {
         name: "Ezekiel Choke",
@@ -181,6 +204,7 @@ async function seed() {
         category: "3/4 Mount",
         videoLink: null,
         lastIntroduced: new Date("2024-07-31"),
+        userId: user.id,
       },
       {
         name: "Kimura",
@@ -188,6 +212,7 @@ async function seed() {
         category: "Top Half Guard",
         videoLink: null,
         lastIntroduced: new Date("2024-08-02"),
+        userId: user.id,
       },
       {
         name: "Back Door Shoulder Lock",
@@ -195,6 +220,7 @@ async function seed() {
         category: "Side Control Bottom",
         videoLink: null,
         lastIntroduced: new Date("2024-08-05"),
+        userId: user.id,
       },
       {
         name: "Knee Grab Half Guard Recovery",
@@ -202,6 +228,7 @@ async function seed() {
         category: "Side Control Bottom",
         videoLink: null,
         lastIntroduced: new Date("2024-08-07"),
+        userId: user.id,
       },
       {
         name: "Back Door D'Arce Escape",
@@ -209,6 +236,7 @@ async function seed() {
         category: "Side Control Bottom",
         videoLink: null,
         lastIntroduced: new Date("2024-08-09"),
+        userId: user.id,
       },
       {
         name: "High Knee North South Escape",
@@ -216,6 +244,7 @@ async function seed() {
         category: "North South Bottom",
         videoLink: null,
         lastIntroduced: new Date("2024-08-14"),
+        userId: user.id,
       },
       {
         name: "North South Variations: Double Over, Alternate to High Knee",
@@ -223,6 +252,7 @@ async function seed() {
         category: "North South Bottom",
         videoLink: null,
         lastIntroduced: new Date("2024-08-16"),
+        userId: user.id,
       },
       {
         name: "Makikomi Roll Through Sweep",
@@ -230,6 +260,7 @@ async function seed() {
         category: "Turtle Bottom",
         videoLink: null,
         lastIntroduced: new Date("2024-08-19"),
+        userId: user.id,
       },
       {
         name: "Single Leg Turtle Escape",
@@ -237,6 +268,7 @@ async function seed() {
         category: "Turtle Bottom",
         videoLink: null,
         lastIntroduced: new Date("2024-08-21"),
+        userId: user.id,
       },
       {
         name: "Granby Roll Escape",
@@ -244,6 +276,7 @@ async function seed() {
         category: "Turtle Bottom",
         videoLink: null,
         lastIntroduced: new Date("2024-08-23"),
+        userId: user.id,
       },
       {
         name: "Knee on Belly Fundamentals",
@@ -251,6 +284,7 @@ async function seed() {
         category: "Knee on Belly",
         videoLink: null,
         lastIntroduced: new Date("2024-08-26"),
+        userId: user.id,
       },
       {
         name: "Baseball Choke",
@@ -258,6 +292,7 @@ async function seed() {
         category: "Knee on Belly",
         videoLink: null,
         lastIntroduced: new Date("2024-08-28"),
+        userId: user.id,
       },
       {
         name: "Elbow Control Arm Lock",
@@ -265,6 +300,7 @@ async function seed() {
         category: "Knee on Belly",
         videoLink: null,
         lastIntroduced: new Date("2024-08-30"),
+        userId: user.id,
       },
       {
         name: "Adamir Turtle Attacks",
@@ -272,6 +308,7 @@ async function seed() {
         category: "Turtle Top",
         videoLink: null,
         lastIntroduced: new Date("2024-09-09"),
+        userId: user.id,
       },
       {
         name: "Adamir Turtle Attacks",
@@ -279,6 +316,7 @@ async function seed() {
         category: "Turtle Top",
         videoLink: null,
         lastIntroduced: new Date("2024-09-11"),
+        userId: user.id,
       },
       {
         name: "Near Side Turtle Back Take",
@@ -286,6 +324,7 @@ async function seed() {
         category: "Turtle Top",
         videoLink: null,
         lastIntroduced: new Date("2024-09-16"),
+        userId: user.id,
       },
       {
         name: "Toreando Spider Defense",
@@ -293,6 +332,7 @@ async function seed() {
         category: "Guard Retention",
         videoLink: null,
         lastIntroduced: new Date("2024-09-18"),
+        userId: user.id,
       },
       {
         name: "Toreando Collar Drag",
@@ -300,6 +340,7 @@ async function seed() {
         category: "Guard Retention",
         videoLink: null,
         lastIntroduced: new Date("2024-09-20"),
+        userId: user.id,
       },
       {
         name: "Toreando Sleeve Grab Roll Sweep",
@@ -307,6 +348,7 @@ async function seed() {
         category: "Guard Retention",
         videoLink: null,
         lastIntroduced: new Date("2024-09-23"),
+        userId: user.id,
       },
       {
         name: "Toreando Knee Brace Lasso",
@@ -314,6 +356,7 @@ async function seed() {
         category: "Guard Retention",
         videoLink: null,
         lastIntroduced: new Date("2024-09-25"),
+        userId: user.id,
       },
       {
         name: "Head Control Concept",
@@ -321,6 +364,7 @@ async function seed() {
         category: "Guard Retention",
         videoLink: null,
         lastIntroduced: new Date("2024-09-27"),
+        userId: user.id,
       },
     ];
 
@@ -331,7 +375,7 @@ async function seed() {
     }
   }
 
-  main().catch((e) => console.error(e));
+  await main().catch((e) => console.error(e));
 
   console.log(`Database has been seeded. 🌱`);
 }
