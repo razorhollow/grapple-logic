@@ -16,6 +16,7 @@ model User {
 
   password Password?
   notes    Note[]
+  techniques Technique[]
 }
 
 model Password {
@@ -43,7 +44,12 @@ model Technique {
   description    String?
   category       String?
   videoLink      String?  // Optional field
-  lastIntroduced DateTime
+  lastIntroduced DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId         String
 }
 
 
