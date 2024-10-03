@@ -1,14 +1,14 @@
-import { LoaderFunctionArgs, json } from '@remix-run/node';
-import { useLoaderData, Link } from '@remix-run/react';
-import { addDays, parseISO, format, isValid } from 'date-fns';
+import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { useLoaderData, Link } from "@remix-run/react";
+import { addDays, parseISO, format, isValid } from "date-fns";
 
-import { prisma } from '~/db.server';
+import { prisma } from "~/db.server";
 
 export async function loader({ params }: LoaderFunctionArgs) {
     const { date } = params;
 
     if (!date || !isValid(parseISO(date))) {
-        throw new Response('Invalid date format', { status: 400 });
+        throw new Response("Invalid date format", { status: 400 });
     }
 
     const classDays = [1, 3, 5]; // Monday, Wednesday, Friday
@@ -37,7 +37,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
                 const dateAfterInterval = addDays(lastIntroduced, interval);
                 reviewDate = getNextClassDate(dateAfterInterval);
             }
-            const dateKey = format(reviewDate, 'yyyy-MM-dd');
+            const dateKey = format(reviewDate, "yyyy-MM-dd");
 
             if (dateKey === date) {
                 techniquesForDate.push({
@@ -69,50 +69,48 @@ function getNextClassDate(date: Date): Date {
 export default function LessonPlan() {
     const { date, isClassDay, techniques } = useLoaderData<typeof loader>();
 
-    const formattedDate = format(new Date(date), 'MMMM d, yyyy (EEEE)');
+    const formattedDate = format(new Date(date), "MMMM d, yyyy (EEEE)");
 
     if (!isClassDay) {
         return (
-            <div className="max-w-md mx-auto mt-10 text-center">
-                <h1 className="text-xl font-bold mb-4">{formattedDate}</h1>
+            <div className="mx-auto mt-10 max-w-md text-center">
+                <h1 className="mb-4 text-xl font-bold">{formattedDate}</h1>
                 <p className="text-gray-600">No class scheduled on this day.</p>
-                <Link to="/calendar" className="text-indigo-600 hover:underline mt-4 block">
-                    Back to Calendar
-                </Link>
             </div>
         );
     }
 
     return (
-        <div className="max-w-4xl mx-auto mt-10">
-            <h1 className="text-2xl font-bold mb-4">Lesson Plan for {formattedDate}</h1>
+        <div className="mx-auto mt-10 max-w-4xl">
+            <h1 className="mb-4 text-2xl font-bold">
+                Lesson Plan for {formattedDate}
+            </h1>
             {techniques.length > 0 ? (
-                <table className="min-w-full bg-white shadow-md rounded-lg">
+                <table className="min-w-full rounded-lg bg-white shadow-md">
                     <thead>
                         <tr>
-                            <th className="py-2 px-4 border-b">Technique Name</th>
-                            <th className="py-2 px-4 border-b">Category</th>
-                            <th className="py-2 px-4 border-b">Last Introduced</th>
+                            <th className="border-b px-4 py-2">Technique Name</th>
+                            <th className="border-b px-4 py-2">Category</th>
+                            <th className="border-b px-4 py-2">Last Introduced</th>
                         </tr>
                     </thead>
                     <tbody>
                         {techniques.map((technique) => (
                             <tr key={technique.id}>
-                                <td className="py-2 px-4 border-b">{technique.name}</td>
-                                <td className="py-2 px-4 border-b">{technique.category}</td>
-                                <td className="py-2 px-4 border-b">
-                                    {format(new Date(technique.lastIntroduced), 'MMMM d, yyyy')}
+                                <td className="border-b px-4 py-2">{technique.name}</td>
+                                <td className="border-b px-4 py-2">{technique.category}</td>
+                                <td className="border-b px-4 py-2">
+                                    {format(new Date(technique.lastIntroduced), "MMMM d, yyyy")}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             ) : (
-                <p className="text-gray-600">No techniques scheduled for review on this day.</p>
+                <p className="text-gray-600">
+                    No techniques scheduled for review on this day.
+                </p>
             )}
-            <Link to="/calendar" className="text-indigo-600 hover:underline mt-4 block">
-                Back to Calendar
-            </Link>
         </div>
     );
 }
