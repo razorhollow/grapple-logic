@@ -1,7 +1,8 @@
 import { ActionFunctionArgs, redirect, json } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 
-import { prisma } from '~/db.server';
+import { createTechnique } from '~/models/technique.server';
+import { requireUserId } from '~/session.server';
 
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
@@ -10,6 +11,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const category = formData.get('category');
     const videoLink = formData.get('videoLink') as string | null;
     const lastIntroduced = new Date(formData.get('lastIntroduced') as string) || new Date();
+    const userId = await requireUserId(request);
 
     if (typeof name !== 'string' || name.trim() === '') {
         return json({ error: 'Technique name is required' }, { status: 400 });
@@ -23,14 +25,13 @@ export async function action({ request }: ActionFunctionArgs) {
         return json({ error: 'Category is required' }, { status: 400 });
     }
 
-    await prisma.technique.create({
-        data: {
-            name,
-            description,
-            category,
-            videoLink,
-            lastIntroduced,
-        },
+    await createTechnique({
+        name,
+        description,
+        category,
+        videoLink,
+        lastIntroduced,
+        userId,
     });
 
     return redirect('/calendar');

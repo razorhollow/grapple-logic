@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { Outlet , Link } from '@remix-run/react';
+import { Outlet , NavLink } from '@remix-run/react';
 import { format ,
     startOfMonth,
     endOfMonth,
@@ -92,20 +92,20 @@ export default function Calendar() {
                             key={formattedDate}
                             className={classNames(dayIdx >= 7 ? 'border-t border-gray-200' : '', 'py-2')}
                         >
-                            <Link to={`/calendar/${formattedDate}`}>
+                            <NavLink to={`/calendar/${formattedDate}`}>
                                 <button
                                     type="button"
                                     className={classNames(
-                                        isToday ? 'text-white' : '',
+                                        isToday ? 'text-gray-900' : '',
                                         !isToday ? 'text-gray-900' : '',
-                                        isToday ? 'bg-indigo-600' : '',
+                                        isToday ? 'bg-gray-200' : '',
                                         !isToday ? 'hover:bg-gray-200' : '',
                                         'mx-auto flex h-8 w-8 items-center justify-center rounded-full'
                                     )}
                                 >
                                     <time dateTime={formattedDate}>{dayNumber}</time>
                                 </button>
-                            </Link>
+                            </NavLink>
                         </div>
                     );
                 })}

@@ -1,10 +1,13 @@
 import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { useLoaderData, Link } from "@remix-run/react";
-import { addDays, parseISO, format, isValid } from "date-fns";
+import { useLoaderData } from "@remix-run/react";
+import { subDays, parse, parseISO, format, isValid } from "date-fns";
 
-import { prisma } from "~/db.server";
+import { getSchedule } from "~/models/technique.server";
+import { requireUserId } from "~/session.server";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+
+export async function loader({ request, params }: LoaderFunctionArgs) {
+    const userId = await requireUserId(request)
     const { date } = params;
 
     if (!date || !isValid(parseISO(date))) {
@@ -12,7 +15,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     }
 
     const classDays = [1, 3, 5]; // Monday, Wednesday, Friday
-    const selectedDate = parseISO(date);
+    const selectedDate = parse(date, "yyyy-MM-dd", new Date());
 
     // Check if the selected date is a class day
     const isClassDay = classDays.includes(selectedDate.getDay());
@@ -21,53 +24,37 @@ export async function loader({ params }: LoaderFunctionArgs) {
     }
 
     // Get the techniques scheduled for this date
-    const reviews = await prisma.technique.findMany();
 
-    const techniquesForDate = [];
+    const lastClassDate = selectedDate.getDay() === 1 ? subDays(selectedDate, 3) : subDays(selectedDate, 2);
+    const lastWeek = subDays(selectedDate, 7);
+    const twoWeeks = subDays(selectedDate, 14);
+    const oneMonth = subDays(selectedDate, 28);
+    const twoMonths = subDays(selectedDate, 56);
+    const targetDates = [lastClassDate, lastWeek, twoWeeks, oneMonth, twoMonths];
+    console.log('targetDates', targetDates);
+    console.log('selectedDate', selectedDate);
 
-    for (const technique of reviews) {
-        const lastIntroduced = new Date(technique.lastIntroduced);
-        const reviewIntervals = [0, 7, 14, 28]; // days after lastIntroduced
+    const reviews = await getSchedule(
+        userId,
+        lastClassDate,
+        lastWeek,
+        twoWeeks,
+        oneMonth,
+        twoMonths
+    );
 
-        for (const interval of reviewIntervals) {
-            let reviewDate;
-            if (interval === 0) {
-                reviewDate = getNextClassDate(lastIntroduced);
-            } else {
-                const dateAfterInterval = addDays(lastIntroduced, interval);
-                reviewDate = getNextClassDate(dateAfterInterval);
-            }
-            const dateKey = format(reviewDate, "yyyy-MM-dd");
-
-            if (dateKey === date) {
-                techniquesForDate.push({
-                    id: technique.id,
-                    name: technique.name,
-                    category: technique.category,
-                    lastIntroduced: technique.lastIntroduced,
-                });
-            }
-        }
-    }
+    console.log('reviews', reviews);
 
     return json({
         date: selectedDate,
         isClassDay: true,
-        techniques: techniquesForDate,
+        techniques: reviews,
     });
-}
-
-function getNextClassDate(date: Date): Date {
-    const classDays = [1, 3, 5]; // Monday, Wednesday, Friday
-    let nextDate = date;
-    while (!classDays.includes(nextDate.getDay())) {
-        nextDate = addDays(nextDate, 1);
-    }
-    return nextDate;
 }
 
 export default function LessonPlan() {
     const { date, isClassDay, techniques } = useLoaderData<typeof loader>();
+    console.log('front end stuff: ', date, isClassDay, techniques);
 
     const formattedDate = format(new Date(date), "MMMM d, yyyy (EEEE)");
 

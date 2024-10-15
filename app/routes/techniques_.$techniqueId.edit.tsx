@@ -21,6 +21,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     const description = formData.get('description') as string | null;
     const category = formData.get('category') as string | null;
     const videoLink = formData.get('videoLink') as string | null;
+    const lastIntroduced = new Date(formData.get('lastIntroduced') as string) || new Date();
 
     if (typeof name !== 'string' || name.trim() === '') {
         return { error: 'Technique name is required' };
@@ -33,6 +34,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
             description,
             category,
             videoLink,
+            lastIntroduced,
         },
     });
 
@@ -86,6 +88,17 @@ export default function EditTechnique() {
                             type="url"
                             name="videoLink"
                             defaultValue={technique.videoLink || ''}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        />
+                    </label>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                        Last Introduced Date
+                        <input
+                            type="date"
+                            name="lastIntroduced"
+                            defaultValue={new Date(technique.lastIntroduced).toISOString().split('T')[0]}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                         />
                     </label>

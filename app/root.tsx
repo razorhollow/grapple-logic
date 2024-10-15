@@ -15,6 +15,7 @@ import stylesheet from "~/tailwind.css";
 
 import NavBar from "./components/NavBar";
 
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -33,7 +34,8 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body className="h-full
+      ">
         <NavBar />
         <Outlet />
         <ScrollRestoration />

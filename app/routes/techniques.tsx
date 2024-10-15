@@ -4,10 +4,13 @@ import { LoaderFunctionArgs } from '@remix-run/node';
 import { Outlet, useLoaderData, Link } from '@remix-run/react';
 import { useState } from 'react';
 
-
 import { prisma } from '~/db.server';
+import { requireUserId } from '~/session.server';
+
+
 
 export async function loader({ request }: LoaderFunctionArgs) {
+    await requireUserId(request);
     const techniques = await prisma.technique.findMany({
         orderBy: { lastIntroduced: 'asc' },
     });
@@ -73,7 +76,7 @@ export default function TechniquesIndex() {
                             <td className="py-2 px-4 border-b">{technique.name}</td>
                             <td className="py-2 px-4 border-b">{technique.category}</td>
                             <td className="py-2 px-4 border-b">
-                                {new Date(technique.lastIntroduced).toLocaleDateString()}
+                                {new Date(technique.lastIntroduced).toLocaleDateString('en-US', { timeZone: 'UTC'})}
                             </td>
                             <td className="py-2 px-4 border-b">
                                 <Link
