@@ -1,7 +1,9 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { useLoaderData, Form, useActionData } from '@remix-run/react';
 
+import ComboboxCategories from '~/components/ComboBox';
 import { prisma } from '~/db.server';
+import { getCategories } from '~/models/technique.server';
 
 export async function loader({ params }: LoaderFunctionArgs) {
     const technique = await prisma.technique.findUnique({
@@ -11,8 +13,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
     if (!technique) {
         throw new Response('Technique not found', { status: 404 });
     }
+    const categories = await getCategories();
+    //create an array from the values of the object
+    const categoryList = categories.map((item) => item.category);
 
-    return technique;
+    return { technique, categoryList };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -42,7 +47,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function EditTechnique() {
-    const technique = useLoaderData<typeof loader>();
+    const {technique, categoryList} = useLoaderData<typeof loader>();
     const actionData = useActionData<typeof action>();
 
     return (
@@ -70,17 +75,7 @@ export default function EditTechnique() {
                         ></textarea>
                     </label>
                 </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                        Category
-                        <input
-                            type="text"
-                            name="category"
-                            defaultValue={technique.category || ""}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                    </label>
-                </div>
+                <ComboboxCategories categories={categoryList.filter(category => category !== null) as string[]} />
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
                         Video Link (Optional)

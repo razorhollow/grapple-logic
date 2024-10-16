@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from "app/components/ui/popover"
 
-export default function ComboboxCategories({ categories }: { categories: string[] }) {
+export default function ComboboxCategories({ categories }: { categories: string[]  }) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
   const [customValue, setCustomValue] = React.useState("")
@@ -32,6 +32,7 @@ export default function ComboboxCategories({ categories }: { categories: string[
     }
 
   return (
+    <>
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
@@ -86,5 +87,7 @@ export default function ComboboxCategories({ categories }: { categories: string[
         </Command>
       </PopoverContent>
     </Popover>
+    <input type="hidden" name="category" value={value} />
+    </>
   )
 }
