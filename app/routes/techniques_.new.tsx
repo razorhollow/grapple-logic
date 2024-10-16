@@ -1,8 +1,19 @@
 import { ActionFunctionArgs, redirect, json } from '@remix-run/node';
-import { Form, useActionData } from '@remix-run/react';
+import { Form, useActionData, useLoaderData } from '@remix-run/react';
 
-import { createTechnique } from '~/models/technique.server';
+import { createTechnique, getCategories } from '~/models/technique.server';
 import { requireUserId } from '~/session.server';
+
+import { Button } from '~/components/ui/button';
+import ComboboxCategories from '~/components/ComboBox';
+
+export async function loader() {
+    const categories = await getCategories();
+    //create an array from the values of the object
+    const categoryList = categories.map((item) => item.category);
+
+    return { categoryList };
+}
 
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
@@ -12,6 +23,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const videoLink = formData.get('videoLink') as string | null;
     const lastIntroduced = new Date(formData.get('lastIntroduced') as string) || new Date();
     const userId = await requireUserId(request);
+    const intent = formData.get('intent');
 
     if (typeof name !== 'string' || name.trim() === '') {
         return json({ error: 'Technique name is required' }, { status: 400 });
@@ -34,11 +46,15 @@ export async function action({ request }: ActionFunctionArgs) {
         userId,
     });
 
-    return redirect('/calendar');
+    if (intent === 'save-and-close') return redirect('/calendar');
+
+    return redirect('/techniques/new');
 }
 
 export default function AddTechnique() {
     const actionData = useActionData<typeof action>();
+    const { categoryList } = useLoaderData <typeof loader>();
+    console.log('categoryList', categoryList);
     return (
         <div className="max-w-md mx-auto mt-10">
             <h1 className="text-xl font-bold mb-4">Add New Technique</h1>
@@ -50,6 +66,7 @@ export default function AddTechnique() {
                             type="text"
                             name="name"
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            autoFocus
                         />
                     </label>
                 </div>
@@ -72,6 +89,7 @@ export default function AddTechnique() {
                         />
                     </label>
                 </div>
+                <ComboboxCategories categories={categoryList} />
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
                         Video Link (Optional)
@@ -94,12 +112,14 @@ export default function AddTechnique() {
                     </label>
                 </div>
                 {actionData?.error ? <p className="text-red-500">{actionData.error}</p> : null}
-                <button
-                    type="submit"
-                    className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500"
-                >
-                    Add Technique
-                </button>
+                <div className='flex justify-between'>
+                    <Button name='intent' value="save-and-close" variant='outline'>
+                        Add and Close
+                    </Button>
+                    <Button name='intent' value="save-and-add-another">
+                        Add and Continue
+                    </Button>
+                </div>
             </Form>
         </div>
     );

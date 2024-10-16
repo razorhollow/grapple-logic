@@ -73,7 +73,7 @@ export default function LessonPlan() {
                 Lesson Plan for {formattedDate}
             </h1>
             {techniques.length > 0 ? (
-                <table className="min-w-full rounded-lg bg-white shadow-md">
+                <table className="min-w-full rounded-lg bg-white shadow-md text-xs md:text-base">
                     <thead>
                         <tr>
                             <th className="border-b px-4 py-2">Technique Name</th>

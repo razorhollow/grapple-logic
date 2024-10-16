@@ -70,3 +70,11 @@ export function getSchedule(
     });
 }
 
+//create a function that gets all unique categories from the techniques table
+export function getCategories() {
+    return prisma.technique.findMany({
+        select: { category: true },
+        distinct: ['category'],
+    });
+}
+
