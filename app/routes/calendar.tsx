@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { Outlet , NavLink } from '@remix-run/react';
-import { format ,
+import { Outlet, NavLink } from '@remix-run/react';
+import {
+    format,
     startOfMonth,
     endOfMonth,
     eachDayOfInterval,
@@ -95,13 +96,14 @@ export default function Calendar() {
                             <NavLink to={`/calendar/${formattedDate}`}>
                                 <button
                                     type="button"
-                                    className={classNames(
-                                        isToday ? 'text-gray-900' : '',
-                                        !isToday ? 'text-gray-900' : '',
-                                        isToday ? 'bg-gray-200' : '',
-                                        !isToday ? 'hover:bg-gray-200' : '',
-                                        'mx-auto flex h-8 w-8 items-center justify-center rounded-full'
-                                    )}
+                                    className={({ isActive }: { isActive: boolean }) =>
+                                        classNames(
+                                            'mx-auto flex h-8 w-8 items-center justify-center rounded-full',
+                                            isActive ? 'bg-indigo-500 text-white' : '',
+                                            isToday && !isActive ? 'bg-gray-200 text-gray-900' : '',
+                                            !isToday && !isActive ? 'text-gray-900 hover:bg-gray-200' : ''
+                                        )
+                                    }
                                 >
                                     <time dateTime={formattedDate}>{dayNumber}</time>
                                 </button>
