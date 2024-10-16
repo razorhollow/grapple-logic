@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, redirect, json } from '@remix-run/node';
-import { Form, useActionData, useLoaderData } from '@remix-run/react';
+import { Form, NavLink, useActionData, useLoaderData } from '@remix-run/react';
 
 import { createTechnique, getCategories } from '~/models/technique.server';
 import { requireUserId } from '~/session.server';
@@ -113,6 +113,7 @@ export default function AddTechnique() {
                 </div>
                 {actionData?.error ? <p className="text-red-500">{actionData.error}</p> : null}
                 <div className='flex justify-between'>
+                    <Button variant="destructive" asChild><NavLink to="/techniques">Cancel</NavLink></Button>
                     <Button name='intent' value="save-and-close" variant='outline'>
                         Add and Close
                     </Button>

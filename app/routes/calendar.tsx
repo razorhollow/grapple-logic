@@ -15,12 +15,12 @@ export default function () {
     }
 
   return (
-    <div className="w-full flex flex-col  justify-center items-center gap-10 md:flex-row">
+    <div className="w-full flex flex-col  justify-center items-center gap-10 md:flex-row md:items-center">
       <Calendar
         mode="single"
         selected={date}
         onSelect={handleSelect}
-        className="rounded-md border mx-auto"
+        className="rounded-md border mx-auto mt-10"
       />
       <Outlet />
     </div>
