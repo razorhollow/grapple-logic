@@ -2,6 +2,7 @@ import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 
 import logoAssetUrl from "app/assets/grapple-logic-logo.svg"
+import heroImageUrl from "app/assets/hero-image.jpeg"
 import { useOptionalUser } from "~/utils";
 
 export const meta: MetaFunction = () => [{ title: "Grapple Logic" }];
@@ -15,8 +16,8 @@ export default function Index() {
           <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
             <div className="absolute inset-0">
               <img
-                className="h-full w-full object-cover"
-                src={logoAssetUrl}
+                className="h-full w-full object-cover bg-blend-overlay"
+                src={heroImageUrl}
                 alt="Grapple Logic"
               />
               <div className="absolute inset-0 bg-slate-800" />
