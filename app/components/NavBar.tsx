@@ -1,14 +1,14 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Form, NavLink, useNavigate } from '@remix-run/react'
+import { Form, NavLink } from '@remix-run/react'
 
 import { useOptionalUser } from '~/utils'
+
 import { Button } from './ui/button'
 
 
 export default function NavBar() {
-    const navigate = useNavigate();
     const user = useOptionalUser();
     return (
         <Disclosure as="nav" className="bg-white shadow">

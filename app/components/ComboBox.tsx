@@ -1,9 +1,8 @@
 "use client"
 
-import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
+import * as React from "react"
 
-import { cn } from "app/lib/utils"
 import { Button } from "app/components/ui/button"
 import {
   Command,
@@ -18,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "app/components/ui/popover"
+import { cn } from "app/lib/utils"
 
 export default function ComboboxCategories({ categories }: { categories: string[]  }) {
   const [open, setOpen] = React.useState(false)
@@ -80,7 +80,7 @@ export default function ComboboxCategories({ categories }: { categories: string[
                     value={customValue}
                     onSelect={handleAddCustomCategory}
                 >
-                    <span>Add "{customValue}"</span>
+                    <span>Add &quot;{customValue}&quot;</span>
                 </CommandItem>
             </CommandGroup>
           </CommandList>
