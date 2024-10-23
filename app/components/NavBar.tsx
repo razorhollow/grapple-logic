@@ -3,6 +3,7 @@ import { PlusIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Form, NavLink } from '@remix-run/react'
 
+import logoAssetUrl from 'app/assets/grapple-logic-logo.svg'
 import { useOptionalUser } from '~/utils'
 
 import { Button } from './ui/button'
@@ -26,8 +27,8 @@ export default function NavBar() {
                         </div>
                         <div className="flex flex-shrink-0 items-center">
                             <img
-                                alt="Your Company"
-                                src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+                                alt="Grapple Logic"
+                                src={logoAssetUrl}
                                 className="h-8 w-auto"
                             />
                         </div>
