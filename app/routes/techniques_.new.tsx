@@ -1,11 +1,12 @@
 import { ActionFunctionArgs, redirect, json } from '@remix-run/node';
-import { Form, NavLink, useActionData, useLoaderData } from '@remix-run/react';
+import { Form, NavLink, useActionData, useLoaderData, useNavigation } from '@remix-run/react';
+import { useEffect, useRef } from 'react';
 
+import ComboboxCategories from '~/components/ComboBox';
+import { Button } from '~/components/ui/button';
 import { createTechnique, getCategories } from '~/models/technique.server';
 import { requireUserId } from '~/session.server';
 
-import { Button } from '~/components/ui/button';
-import ComboboxCategories from '~/components/ComboBox';
 
 export async function loader() {
     const categories = await getCategories();
@@ -54,19 +55,29 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function AddTechnique() {
     const actionData = useActionData<typeof action>();
     const { categoryList } = useLoaderData <typeof loader>();
-    console.log('categoryList', categoryList);
+    const navigation = useNavigation()
+    const isAdding = navigation.state === 'submitting'
+    const formRef = useRef<HTMLFormElement>(null)
+    const techniqueNameRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        if (!isAdding) {
+            formRef.current?.reset()}
+            techniqueNameRef.current?.focus()
+    }, [isAdding])
+
     return (
         <div className="max-w-md mx-auto mt-10">
             <h1 className="text-xl font-bold mb-4">Add New Technique</h1>
-            <Form method="post" className="space-y-4">
+            <Form ref={formRef} method="post" className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
                         Technique Name
                         <input
+                            ref={techniqueNameRef}
                             type="text"
                             name="name"
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                            autoFocus
                         />
                     </label>
                 </div>
