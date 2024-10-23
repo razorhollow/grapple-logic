@@ -22,6 +22,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export async function action({ request, params }: ActionFunctionArgs) {
     const formData = await request.formData();
+    const intent = formData.get('intent') as string | null;
     const name = formData.get('name');
     const description = formData.get('description') as string | null;
     const category = formData.get('category') as string | null;
@@ -31,6 +32,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
     if (typeof name !== 'string' || name.trim() === '') {
         return { error: 'Technique name is required' };
     }
+
+    if (intent === 'save') {
 
     await prisma.technique.update({
         where: { id: Number(params.techniqueId) },
@@ -42,6 +45,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
             lastIntroduced,
         },
     });
+
+    return redirect('/techniques');
+}
+if (intent === 'delete') {
+    await prisma.technique.delete({
+        where: { id: Number(params.techniqueId) },
+    });
+}
 
     return redirect('/techniques');
 }
@@ -100,10 +111,20 @@ export default function EditTechnique() {
                 </div>
                 {actionData?.error ? <p className="text-red-500">{actionData.error}</p> : null}
                 <button
+                name='intent'
+                value='save'
                     type="submit"
                     className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500"
                 >
                     Update Technique
+                </button>
+                <button
+                name='intent'
+                value='delete'
+                    type="submit"
+                    className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-500"
+                >
+                    Delete Technique
                 </button>
             </Form>
         </div>
