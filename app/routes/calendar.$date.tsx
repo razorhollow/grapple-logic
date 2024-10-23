@@ -1,6 +1,6 @@
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
-import { subDays, parse, parseISO, format, isValid } from "date-fns";
+import { subDays, parse, parseISO, isValid } from "date-fns";
 
 import { getSchedule } from "~/models/technique.server";
 import { requireUserId } from "~/session.server";
@@ -53,7 +53,7 @@ export default function LessonPlan() {
     const { date, isClassDay, techniques } = useLoaderData<typeof loader>();
     console.log('front end stuff: ', date, isClassDay, techniques);
 
-    const formattedDate = format(new Date(date), "MMMM d, yyyy (EEEE)");
+    const formattedDate = new Date(date).toLocaleDateString('en-US', { timeZone: 'UTC'});
 
     if (!isClassDay) {
         return (
@@ -89,7 +89,7 @@ export default function LessonPlan() {
                                 </td>
                                 <td className="border-b px-4 py-2">{technique.category}</td>
                                 <td className="border-b px-4 py-2">
-                                    {format(new Date(technique.lastIntroduced), "MMMM d, yyyy")}
+                                    {new Date(technique.lastIntroduced).toLocaleDateString('en-US', { timeZone: 'UTC'})}
                                 </td>
                             </tr>
                         ))}
