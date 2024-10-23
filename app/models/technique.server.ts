@@ -46,7 +46,6 @@ export function getSchedule(
     oneMonth: Date,
     twoMonths: Date
 ) {
-    console.log('This is the submitted data: ', userId, lastClassDate, lastWeek, twoWeeks, oneMonth, twoMonths);
     const shortenedLast = lastClassDate.toISOString().split('T')[0];
     const shortenedWeek = lastWeek.toISOString().split('T')[0];
     const shortenedTwoWeeks = twoWeeks.toISOString().split('T')[0];
@@ -75,6 +74,20 @@ export function getCategories() {
     return prisma.technique.findMany({
         select: { category: true },
         distinct: ['category'],
+    });
+}
+
+export function getTechnique({
+    id,
+    userId,
+}: Pick<Technique, "id"> & {
+    userId: User["id"];
+}) {
+    return prisma.technique.findFirst({
+        where: {
+            id: id,
+            userId,
+        },
     });
 }
 

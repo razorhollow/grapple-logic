@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { subDays, parse, parseISO, format, isValid } from "date-fns";
 
 import { getSchedule } from "~/models/technique.server";
@@ -30,9 +30,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     const twoWeeks = subDays(selectedDate, 14);
     const oneMonth = subDays(selectedDate, 28);
     const twoMonths = subDays(selectedDate, 56);
-    const targetDates = [lastClassDate, lastWeek, twoWeeks, oneMonth, twoMonths];
-    console.log('targetDates', targetDates);
-    console.log('selectedDate', selectedDate);
 
     const reviews = await getSchedule(
         userId,
@@ -68,6 +65,7 @@ export default function LessonPlan() {
     }
 
     return (
+        <>
         <div className="mx-auto mt-10 max-w-4xl">
             <h1 className="mb-4 text-2xl font-bold">
                 Lesson Plan for {formattedDate}
@@ -84,7 +82,11 @@ export default function LessonPlan() {
                     <tbody>
                         {techniques.map((technique) => (
                             <tr key={technique.id}>
-                                <td className="border-b px-4 py-2">{technique.name}</td>
+                                <td className="border-b px-4 py-2">
+                                    <NavLink to={`/calendar/${date.split('T')[0]}/details/${technique.id}`} className="hover:text-gray-500">
+                                        {technique.name}
+                                    </NavLink>
+                                </td>
                                 <td className="border-b px-4 py-2">{technique.category}</td>
                                 <td className="border-b px-4 py-2">
                                     {format(new Date(technique.lastIntroduced), "MMMM d, yyyy")}
@@ -99,5 +101,9 @@ export default function LessonPlan() {
                 </p>
             )}
         </div>
+        <div className="block mt-4">
+            <Outlet />
+        </div>
+        </>
     );
 }

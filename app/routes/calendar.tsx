@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Calendar } from "~/components/ui/calendar";
 
 
-export default function () {
+export default function CalendarRoute() {
     const [date, setDate] = useState<Date | undefined>(new Date())
     const navigate = useNavigate()
 
@@ -22,7 +22,9 @@ export default function () {
         onSelect={handleSelect}
         className="rounded-md border mx-auto mt-10"
       />
+      <div className="mx-auto">
       <Outlet />
+      </div>
     </div>
   );
 }
