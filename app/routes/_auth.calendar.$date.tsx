@@ -41,8 +41,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         twoMonths
     );
 
-    console.log('reviews', reviews);
-
     return json({
         date: selectedDate,
         isClassDay: true,
