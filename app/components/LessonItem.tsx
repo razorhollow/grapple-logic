@@ -30,7 +30,7 @@ export default function LessonItem({ technique }: LessonItemProps) {
       } else if (days < 21) {
         return "bg-purple-200";     // Less than 3 weeks
       } else if (days <= 28) {
-        return "bg-brown-200";     // Less than or equal to 4 weeks
+        return "bg-amber-900 text-white";     // Less than or equal to 4 weeks
       } else if (days <= 56) {
         return "bg-black text-white";      // Less than or equal to 8 weeks
       } else {
