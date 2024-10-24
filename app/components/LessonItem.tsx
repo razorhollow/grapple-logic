@@ -24,17 +24,17 @@ export default function LessonItem({ technique }: LessonItemProps) {
     // Determine background class based on daysSinceLastStudied
     const getBackgroundClass = (days: number) => {
       if (days < 7) {
-        return "bg-red-200";       // Less than 7 days
+        return "bg-gray-200";       // Less than 7 days
       } else if (days < 14) {
-        return "bg-yellow-200";    // Less than 2 weeks
+        return "bg-blue-200";    // Less than 2 weeks
       } else if (days < 21) {
-        return "bg-green-300";     // Less than 3 weeks
+        return "bg-purple-200";     // Less than 3 weeks
       } else if (days <= 28) {
-        return "bg-green-200";     // Less than or equal to 4 weeks
+        return "bg-brown-200";     // Less than or equal to 4 weeks
       } else if (days <= 56) {
-        return "bg-gray-300";      // Less than or equal to 8 weeks
+        return "bg-black text-white";      // Less than or equal to 8 weeks
       } else {
-        return "bg-gray-200";      // Greater than 8 weeks
+        return "bg-red-500 text-white";      // Greater than 8 weeks
       }
     };
   
