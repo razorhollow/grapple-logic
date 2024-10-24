@@ -1,6 +1,7 @@
 import { VideoCameraIcon } from "@heroicons/react/24/outline"; // Optional: for better class concatenation
 import clsx from "clsx";
 
+import { Badge } from "./ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 
 interface LessonItemProps {
@@ -46,9 +47,9 @@ export default function LessonItem({ technique, date }: LessonItemProps) {
       <CollapsibleTrigger className={clsx(triggerBgClass, "rounded-lg p-2 w-full h-16")}>
         <div className="flex justify-between w-full">
           <p>{technique.name}</p>
-          <p className="inline-flex items-center rounded-full bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600 w-32 text-center justify-center">
+          <Badge variant="secondary">
             {technique.category}
-          </p>
+          </Badge>
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent className="w-full">
