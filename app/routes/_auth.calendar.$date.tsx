@@ -73,7 +73,7 @@ export default function LessonPlan() {
             </h1>
             {techniques.length > 0 ? (
                 techniques.map((technique) => (
-                    <LessonItem key={technique.id} technique={technique} />
+                    <LessonItem key={technique.id} technique={technique} date={new Date(date)}/>
                 ))
             ) : (
                 <p className="text-gray-600">

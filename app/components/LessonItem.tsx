@@ -11,15 +11,14 @@ interface LessonItemProps {
     description: string | null;
     videoLink: string | null;
     lastIntroduced: string;
-  };
+  },
+  date: Date;
 }
 
-export default function LessonItem({ technique }: LessonItemProps) {
+export default function LessonItem({ technique, date }: LessonItemProps) {
   
-    const now = new Date();
-
     // Calculate the difference in days between lastStudied and now
-    const daysSinceLastStudied = Math.floor((now.getTime() - new Date(technique.lastIntroduced).getTime()) / (1000 * 60 * 60 * 24));
+    const daysSinceLastStudied = Math.floor((date.getTime() - new Date(technique.lastIntroduced).getTime()) / (1000 * 60 * 60 * 24));
   
     // Determine background class based on daysSinceLastStudied
     const getBackgroundClass = (days: number) => {
