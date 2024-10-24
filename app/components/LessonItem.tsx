@@ -42,7 +42,7 @@ export default function LessonItem({ technique, date }: LessonItemProps) {
   
 
   return (
-    <Collapsible className="w-full">
+    <Collapsible className="w-full my-2">
       <CollapsibleTrigger className={clsx(triggerBgClass, "rounded-lg p-2 w-full h-16")}>
         <div className="flex justify-between w-full">
           <p>{technique.name}</p>
@@ -53,10 +53,18 @@ export default function LessonItem({ technique, date }: LessonItemProps) {
       </CollapsibleTrigger>
       <CollapsibleContent className="w-full">
         <div className="flex justify-around gap-4 items-center">
-            <p>{technique.description}</p>
-            {technique.videoLink ? <a href={technique.videoLink} target="_blank" rel="noreferrer">
-                <VideoCameraIcon className="inline-block text-gray-400 rounded-lg" height="32" />
-            </a> : null}
+            {technique.description ? (
+              <>
+                <p>{technique.description}</p>
+                {technique.videoLink ? (
+                  <a href={technique.videoLink} target="_blank" rel="noreferrer">
+                    <VideoCameraIcon className="inline-block text-gray-400 rounded-lg" height="32" />
+                  </a>
+                ) : null}
+              </>
+            ) : (
+              <p>No description available.</p>
+            )}
         </div>
       </CollapsibleContent>
     </Collapsible>
