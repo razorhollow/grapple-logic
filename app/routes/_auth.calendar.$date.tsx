@@ -2,6 +2,7 @@ import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { subDays, parse, parseISO, isValid } from "date-fns";
 
+import LessonItem from "~/components/LessonItem";
 import { getSchedule } from "~/models/technique.server";
 import { requireUserId } from "~/session.server";
 

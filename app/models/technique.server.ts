@@ -64,7 +64,7 @@ export function getSchedule(
             ]
         },
 
-        select: { id: true, name: true, category: true, lastIntroduced: true },
+        select: { id: true, name: true, category: true, description: true, videoLink: true, lastIntroduced: true },
         orderBy: { lastIntroduced: "desc" },
     });
 }
