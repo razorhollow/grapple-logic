@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { subDays, parse, parseISO, isValid } from "date-fns";
 
 import LessonItem from "~/components/LessonItem";
@@ -58,7 +58,7 @@ export default function LessonPlan() {
 
     if (!isClassDay) {
         return (
-            <div className="mx-auto mt-10 max-w-md text-center">
+            <div className="mx-auto mt-10 text-center">
                 <h1 className="mb-4 text-xl font-bold">{formattedDate}</h1>
                 <p className="text-gray-600">No class scheduled on this day.</p>
             </div>
@@ -67,35 +67,14 @@ export default function LessonPlan() {
 
     return (
         <>
-        <div className="mx-auto mt-10 max-w-4xl">
-            <h1 className="mb-4 text-2xl font-bold">
+        <div className="mx-4 md:mt-8">
+            <h1 className="mb-8 text-2xl font-bold text-center">
                 Lesson Plan for {formattedDate}
             </h1>
             {techniques.length > 0 ? (
-                <table className="min-w-full rounded-lg bg-white shadow-md text-xs md:text-base">
-                    <thead>
-                        <tr>
-                            <th className="border-b px-4 py-2">Technique Name</th>
-                            <th className="border-b px-4 py-2">Category</th>
-                            <th className="border-b px-4 py-2">Last Introduced</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {techniques.map((technique) => (
-                            <tr key={technique.id}>
-                                <td className="border-b px-4 py-2">
-                                    <NavLink to={`/calendar/${date.split('T')[0]}/details/${technique.id}`} className="hover:text-gray-500">
-                                        {technique.name}
-                                    </NavLink>
-                                </td>
-                                <td className="border-b px-4 py-2">{technique.category}</td>
-                                <td className="border-b px-4 py-2">
-                                    {new Date(technique.lastIntroduced).toLocaleDateString('en-US', { timeZone: 'UTC'})}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                techniques.map((technique) => (
+                    <LessonItem key={technique.id} technique={technique} />
+                ))
             ) : (
                 <p className="text-gray-600">
                     No techniques scheduled for review on this day.

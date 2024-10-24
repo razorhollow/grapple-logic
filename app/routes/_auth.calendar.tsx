@@ -15,15 +15,15 @@ export default function CalendarRoute() {
     }
 
   return (
-    <div className="w-full flex flex-col  justify-center items-center gap-10 md:flex-row md:items-center">
+    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
       <Calendar
         mode="single"
         selected={date}
         onSelect={handleSelect}
         className="rounded-md border mx-auto mt-10"
       />
-      <div className="mx-auto">
-      <Outlet />
+      <div className="">
+        <Outlet />
       </div>
     </div>
   );

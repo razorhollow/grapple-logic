@@ -7,43 +7,56 @@ interface LessonItemProps {
   technique: {
     id: number;
     name: string;
-    category: string;
+    category: string | null;
     description: string | null;
     videoLink: string | null;
+    lastIntroduced: string;
   };
-  colorOption: "oneDay" | "oneWeek" | "twoWeeks" | "oneMonth" | "twoMonths" | "threeMonths";  // Add the colorOption prop
 }
 
-export default function LessonItem({ technique, colorOption }: LessonItemProps) {
+export default function LessonItem({ technique }: LessonItemProps) {
   
-  // Map the colorOption to the corresponding Tailwind class
-  const colorClassMap = {
-    oneDay: "bg-red-200",
-    oneWeek: "bg-yellow-200",
-    twoWeeks: "bg-green-300",
-    oneMonth: "bg-green-200",
-    twoMonths: "bg-gray-300",
-    threeMonths: "bg-gray-200",
-  };
+    const now = new Date();
 
-  // Dynamically get the background class based on the passed colorOption
-  const triggerBgClass = colorClassMap[colorOption];
+    // Calculate the difference in days between lastStudied and now
+    const daysSinceLastStudied = Math.floor((now.getTime() - new Date(technique.lastIntroduced).getTime()) / (1000 * 60 * 60 * 24));
+  
+    // Determine background class based on daysSinceLastStudied
+    const getBackgroundClass = (days: number) => {
+      if (days < 7) {
+        return "bg-red-200";       // Less than 7 days
+      } else if (days < 14) {
+        return "bg-yellow-200";    // Less than 2 weeks
+      } else if (days < 21) {
+        return "bg-green-300";     // Less than 3 weeks
+      } else if (days <= 28) {
+        return "bg-green-200";     // Less than or equal to 4 weeks
+      } else if (days <= 56) {
+        return "bg-gray-300";      // Less than or equal to 8 weeks
+      } else {
+        return "bg-gray-200";      // Greater than 8 weeks
+      }
+    };
+  
+    // Get the appropriate background class
+    const triggerBgClass = getBackgroundClass(daysSinceLastStudied);
+  
 
   return (
-    <Collapsible>
-      <CollapsibleTrigger className={clsx(triggerBgClass, "rounded-lg p-2")}>
-        <div className="grid grid-cols-2">
+    <Collapsible className="w-full">
+      <CollapsibleTrigger className={clsx(triggerBgClass, "rounded-lg p-2 w-full h-16")}>
+        <div className="flex justify-between w-full">
           <p>{technique.name}</p>
-          <p className="inline-flex items-center rounded-full bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600">
+          <p className="inline-flex items-center rounded-full bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600 w-32 text-center justify-center">
             {technique.category}
           </p>
         </div>
       </CollapsibleTrigger>
-      <CollapsibleContent>
-        <div>
-            {technique.description}
-            {technique.videoLink ? <a href="google.com" target="_blank" rel="noreferrer">
-                <VideoCameraIcon className="h-5 w-5 p-5 border border-gray-300 inline-block" />
+      <CollapsibleContent className="w-full">
+        <div className="flex justify-around gap-4 items-center">
+            <p>{technique.description}</p>
+            {technique.videoLink ? <a href={technique.videoLink} target="_blank" rel="noreferrer">
+                <VideoCameraIcon className="inline-block text-gray-400 rounded-lg" height="32" />
             </a> : null}
         </div>
       </CollapsibleContent>
