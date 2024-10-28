@@ -2,6 +2,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from '@remix-run/nod
 import { useLoaderData, Form, useActionData } from '@remix-run/react';
 
 import ComboboxCategories from '~/components/ComboBox';
+import { Button } from '~/components/ui/button';
 import { prisma } from '~/db.server';
 import { getCategories } from '~/models/technique.server';
 
@@ -111,22 +112,24 @@ export default function EditTechnique() {
                     </label>
                 </div>
                 {actionData?.error ? <p className="text-red-500">{actionData.error}</p> : null}
-                <button
-                name='intent'
-                value='save'
+                <Button
+                    variant="default"                                                                                                                                                           
+                    name='intent'
+                    value='save'
                     type="submit"
-                    className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500"
+                    className="w-full"
                 >
                     Update Technique
-                </button>
-                <button
+                </Button>
+                <Button
+                variant="destructive"
                 name='intent'
                 value='delete'
                     type="submit"
-                    className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-500"
+                    className="w-full"
                 >
                     Delete Technique
-                </button>
+                </Button>
             </Form>
         </div>
     );
