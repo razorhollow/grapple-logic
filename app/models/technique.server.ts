@@ -91,3 +91,22 @@ export function getTechnique({
     });
 }
 
+//create a function that updates a technique's lastIntroduced date given the technique id, user id, and new date
+export function recycleTechnique({
+    id,
+    userId,
+    lastIntroduced,
+}: Pick<Technique, "id" | "lastIntroduced"> & {
+    userId: User["id"];
+}) {
+    return prisma.technique.update({
+        where: {
+            id,
+            userId,
+        },
+        data: {
+            lastIntroduced,
+        },
+    });
+}
+
