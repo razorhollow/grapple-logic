@@ -18,6 +18,7 @@ export default function CalendarRoute() {
     <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
       <Calendar
         mode="single"
+        required
         selected={date}
         onSelect={handleSelect}
         className="rounded-md border mx-auto mt-10"
