@@ -37,7 +37,7 @@ export default function TechniqueDetails() {
     return (
         <div>
           <div className="px-4">
-            <h3 className="text-base font-semibold leading-7 text-gray-900">{technique.name}</h3>
+            <h3 className="text-base font-semibold leading-7 text-gray-900 capitalize">{technique.name}</h3>
             <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Details and additional info.</p>
           </div>
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4">

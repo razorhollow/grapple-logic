@@ -33,7 +33,7 @@ export default function TechniquesIndex() {
                 <tbody>
                     {techniques.map((technique) => (
                         <tr key={technique.id}>
-                            <td className="py-2 px-4 border-b"><Link to={`/techniques/${technique.id}`} className='hover:text-gray-700'>{technique.name}</Link></td>
+                            <td className="py-2 px-4 border-b"><Link to={`/techniques/${technique.id}`} className='hover:text-gray-700 capitalize'>{technique.name}</Link></td>
                             <td className="py-2 px-4 border-b">{technique.category}</td>
                             <td className="py-2 px-4 border-b">
                                 {new Date(technique.lastIntroduced).toLocaleDateString('en-US', { timeZone: 'UTC'})}
