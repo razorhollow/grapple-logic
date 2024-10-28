@@ -12,7 +12,7 @@ import { requireUserId } from '~/session.server';
 export async function loader({ request }: LoaderFunctionArgs) {
     await requireUserId(request);
     const techniques = await prisma.technique.findMany({
-        orderBy: { lastIntroduced: 'asc' },
+        orderBy: { lastIntroduced: 'desc' },
     });
     return techniques;
 }
