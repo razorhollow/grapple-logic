@@ -21,7 +21,7 @@ export default function TechniquesIndex() {
         <div className="max-w-4xl mx-auto mt-10">
             {/* Modal Section   */}
 
-            <h1 className="text-2xl font-bold mb-4">All Techniques</h1>
+            <h1 className="text-2xl font-bold mb-4 px-4">All Techniques</h1>
             <table className="min-w-full bg-white shadow-md rounded-lg">
                 <thead>
                     <tr>
