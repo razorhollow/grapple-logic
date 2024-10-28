@@ -86,6 +86,7 @@ export default function AddTechnique() {
                         Description
                         <textarea
                             name="description"
+                            rows={5}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                         ></textarea>
                     </label>

@@ -81,6 +81,7 @@ export default function EditTechnique() {
                         Description
                         <textarea
                             name="description"
+                            rows={5}
                             defaultValue={technique.description || ''}
                             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                         ></textarea>
