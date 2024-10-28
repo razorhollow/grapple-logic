@@ -28,7 +28,6 @@ export default function TechniquesIndex() {
                         <th className="py-2 px-4 border-b">Name</th>
                         <th className="py-2 px-4 border-b">Category</th>
                         <th className="py-2 px-4 border-b">Last Introduced</th>
-                        <th className="py-2 px-4 border-b">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,14 +37,6 @@ export default function TechniquesIndex() {
                             <td className="py-2 px-4 border-b">{technique.category}</td>
                             <td className="py-2 px-4 border-b">
                                 {new Date(technique.lastIntroduced).toLocaleDateString('en-US', { timeZone: 'UTC'})}
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                                <Link
-                                    to={`/techniques/${technique.id}/edit`}
-                                    className="text-indigo-600 hover:text-indigo-900"
-                                >
-                                    Edit
-                                </Link>
                             </td>
                         </tr>
                     ))}
