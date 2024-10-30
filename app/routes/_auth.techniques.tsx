@@ -1,6 +1,6 @@
 import { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, Link, useSearchParams } from '@remix-run/react';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, SparklesIcon, TagIcon } from '@heroicons/react/20/solid';
 
 import PaginationFooter from '~/components/Pagination';
 import { prisma } from '~/db.server';
@@ -40,7 +40,7 @@ export default function TechniquesIndex() {
                     <tr>
                         <th className="py-1 px-4 border-b">Name</th>
                         <th className="py-1 px-4 border-b">Category</th>
-                        <th className="py-1 px-4 border-b"><CalendarIcon /></th>
+                        <th className="py-1 px-4 border-b">Last Studied</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,11 +55,11 @@ export default function TechniquesIndex() {
                     ))}
                 </tbody>
             </table>
-            <div  className='text-sm flex justify-between mt-4 mx-4 text-gray-400 italic'>
-              <p className='hidden sm:block'>Displaying {techniques.length} items of {count}</p>
-              <p>Page {currentPage} of {totalPages}</p>
+            <div  className='w-[80%]] text-sm flex justify-between mt-4 px-4 text-gray-400 italic'>
+              <p className='text-nowrap hidden sm:block'>Displaying {techniques.length} items of {count}</p>
+              <PaginationFooter pageCount={totalPages} />
+              <p className='text-nowrap'>Page {currentPage} of {totalPages}</p>
             </div>
-            <PaginationFooter pageCount={totalPages} />
         </div>
     );
 }

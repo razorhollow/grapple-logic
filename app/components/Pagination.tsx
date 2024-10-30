@@ -7,7 +7,7 @@ interface PaginationFooterProps {
 
 export default function PaginationFooter({pageCount}: PaginationFooterProps) {
     return (
-        <Pagination className="absolute bottom-2 left-0">
+        <Pagination>
             <PaginationContent>
                 {Array.from({ length: pageCount }).map((_, i) => (
                     <PaginationItem key={i}>
