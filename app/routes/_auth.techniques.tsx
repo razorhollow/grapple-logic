@@ -1,4 +1,3 @@
-import { CalendarIcon } from 'lucide-react';
 import { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, Link, useSearchParams } from '@remix-run/react';
 import { CalendarIcon } from 'lucide-react';
