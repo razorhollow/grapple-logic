@@ -3,7 +3,7 @@ import {
   ChevronRightIcon,
   DotsHorizontalIcon,
 } from "@radix-ui/react-icons"
-import { NavLink } from "@remix-run/react"
+import { Link, useLocation } from "@remix-run/react"
 import * as React from "react"
 
 import { ButtonProps, buttonVariants } from "~/components/ui/button"
@@ -41,29 +41,46 @@ const PaginationItem = React.forwardRef<
 ))
 PaginationItem.displayName = "PaginationItem"
 
-type PaginationLinkProps = 
-  Pick<ButtonProps, "size"> &
-  React.ComponentProps<typeof NavLink>
+type PaginationLinkProps = {
+  size?: ButtonProps["size"]
+  to: string
+} & React.ComponentProps<typeof Link>
 
+  
   const PaginationLink = ({
     className,
     size = "icon",
+    to,
     ...props
-  }: PaginationLinkProps) => (
-    <NavLink
-      {...props}
-      end
-      className={({ isActive }) =>
-        cn(
+  }: PaginationLinkProps & {className?: string}) => {
+    const location = useLocation()
+  
+    // Create URL objects for comparison
+    const baseUrl = "http://example.com"
+    const currentUrl = new URL(location.pathname + location.search, baseUrl)
+    const linkUrl = new URL(to, baseUrl)
+  
+    // Determine if the link is active
+    const isActive =
+      currentUrl.pathname === linkUrl.pathname &&
+      currentUrl.search === linkUrl.search
+  
+    return (
+      <Link
+        to={to}
+        className={cn(
           buttonVariants({
             variant: isActive ? "outline" : "ghost",
             size,
           }),
           className
-        )
-      }
-    />
-  )
+        )}
+        aria-current={isActive ? "page" : undefined}
+        {...props}
+      />
+    )
+  }
+  
   
 PaginationLink.displayName = "PaginationLink"
 
