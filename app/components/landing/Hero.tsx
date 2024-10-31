@@ -16,7 +16,7 @@ const navigation = [
     { name: 'Company', href: '#' },
 ]
 
-export default function HeroSection() {
+export default function HeroSection({user}) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (
@@ -50,6 +50,14 @@ export default function HeroSection() {
                             </a>
                         ))}
                     </div>
+                    {user ? (
+                        <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-4 items-baseline">
+                        <NavLink to="/calendar" className="text-xs/6 font-semibold text-slate-800 bg-gradient-to-r from-white to-blue-200 rounded-sm px-2">
+                        Go To Dashboard
+                    </NavLink>
+                    </div>
+                    )
+                :
                     <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-4 items-baseline">
                         <NavLink to="/login" className="text-xs/6 font-semibold text-white">
                             Sign In
@@ -58,6 +66,7 @@ export default function HeroSection() {
                             Sign Up
                         </NavLink>
                     </div>
+                }
                 </nav>
                 <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
                     <div className="fixed inset-0 z-50" />

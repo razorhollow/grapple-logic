@@ -11,7 +11,7 @@ export default function Index() {
   const user = useOptionalUser();
   return (
     <main>
-      <HeroSection />
+      <HeroSection user={user}/>
     </main>
   );
 }
