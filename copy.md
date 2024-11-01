@@ -33,7 +33,7 @@ Graphs, metrics, and badges to track and celebrate your progress. Understand whi
 ### Science That Works
 
 
-Studies have shown that using spaced repetition can increase retention by up to **60%**. Grapple Logic helps you overcome the forgetting curve by introducing scientifically proven repetition cycles. You can be sure that every minute on the mat counts.
+Studies have shown that using spaced repetition can increase retention by up to 60%. Grapple Logic helps you overcome the forgetting curve by introducing scientifically proven repetition cycles. You can be sure that every minute on the mat counts.
 
 ### Why Grapple Logic Works for Every BJJ Practitioner
 

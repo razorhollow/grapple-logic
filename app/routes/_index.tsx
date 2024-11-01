@@ -3,6 +3,7 @@ import { Link } from "@remix-run/react";
 
 import FeatureSection from "~/components/landing/FeaturesSection";
 import HeroSection from "~/components/landing/Hero";
+import HowSection from "~/components/landing/HowSection";
 import { useOptionalUser } from "~/utils";
 
 
@@ -14,6 +15,7 @@ export default function Index() {
     <main>
       <HeroSection user={user}/>
       <FeatureSection />
+      <HowSection />
     </main>
   );
 }

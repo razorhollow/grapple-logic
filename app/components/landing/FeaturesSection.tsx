@@ -18,8 +18,8 @@ import {
       icon: ArrowPathRoundedSquareIcon,
     },
     {
-      name: 'Backed by Science',
-      description: 'Our methods use proven learning strategies to help you retain techniques and maximize training effectiveness.',
+      name: 'Science That Works',
+      description: 'Studies have shown that using spaced repetition can increase retention by up to 60%. Grapple Logic helps you overcome the forgetting curve by introducing scientifically proven repetition cycles. You can be sure that every minute on the mat counts.',
       icon: BoltIcon,
     },
   ];
