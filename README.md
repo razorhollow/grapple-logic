@@ -1,174 +1,80 @@
-# Remix Indie Stack
+# Grapple Logic
 
-![The Remix Indie Stack](https://repository-images.githubusercontent.com/465928257/a241fa49-bd4d-485a-a2a5-5cb8e4ee0abf)
+Grapple Logic is a lesson planning app designed to help Brazilian Jiu-Jitsu practitioners maximize their training with science-backed learning. Using spaced repetition and personalized schedules, Grapple Logic helps you master techniques faster and retain what you learn for the long term. Whether you're a beginner or an experienced coach, Grapple Logic adapts to your goals and training routine.
 
-Learn more about [Remix Stacks](https://remix.run/stacks).
+Check out the deployed version of GrappleLogic: [Live Demo on Fly.io](https://grapple-logic-fed5.fly.dev/)
 
-```sh
-npx create-remix@latest --template remix-run/indie-stack
-```
+## Technology and Features
 
-## What's in the stack
+Grapple Logic is built using modern web technologies to provide a seamless and efficient user experience:
 
-- [Fly app deployment](https://fly.io) with [Docker](https://www.docker.com/)
-- Production-ready [SQLite Database](https://sqlite.org)
-- Healthcheck endpoint for [Fly backups region fallbacks](https://fly.io/docs/reference/configuration/#services-http_checks)
-- [GitHub Actions](https://github.com/features/actions) for deploy on merge to production and staging environments
-- Email/Password Authentication with [cookie-based sessions](https://remix.run/utils/sessions#md-createcookiesessionstorage)
-- Database ORM with [Prisma](https://prisma.io)
-- Styling with [Tailwind](https://tailwindcss.com/)
-- End-to-end testing with [Cypress](https://cypress.io)
-- Local third party request mocking with [MSW](https://mswjs.io)
-- Unit testing with [Vitest](https://vitest.dev) and [Testing Library](https://testing-library.com)
-- Code formatting with [Prettier](https://prettier.io)
-- Linting with [ESLint](https://eslint.org)
-- Static Types with [TypeScript](https://typescriptlang.org)
+- **Remix**: Server-side rendering and optimized routing for fast and responsive interfaces.
+- **Prisma**: Type-safe database client that makes working with the data intuitive and efficient.
+- **SQLite**: Lightweight and fast database for easy local development and scalable deployment.
+- **Server-Side Pagination**: Ensures smooth performance even with large datasets by efficiently loading and displaying data.
+- **Tailwind CSS**: Utility-first CSS framework for highly customizable and responsive styling.
+- **React**: A powerful library for building interactive user interfaces with reusable components.
 
-Not a fan of bits of the stack? Fork it, change it, and use `npx create-remix --template your/repo`! Make it your own.
+## Features
 
-## Quickstart
+- **Personalized Lesson Plans**: Tailored plans for each user to maximize growth.
+- **Spaced Repetition**: Optimize technique retention with scientifically proven review schedules.
+- **Progress Tracking**: Monitor your journey, visualize growth, and identify areas for improvement.
+- **Smart Scheduling**: Automatic review scheduling based on your personal training frequency.
+- **Coach Support**: Tools for coaches to create structured lesson plans and track student progress.
 
-Click this button to create a [Gitpod](https://gitpod.io) workspace with the project set up and Fly pre-installed
+## Getting Started
 
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/remix-run/indie-stack/tree/main)
+1. **Sign Up**: Create an account with just an email address.
+2. **Add Your Techniques**: Add techniques and drills as you learn them, specifying when they were introduced.
+3. **Train Smart**: Follow your personalized review schedule and watch your progress grow.
 
-## Development
+## Installation
 
-- Initial setup:
+To run Grapple Logic locally:
 
-  ```sh
-  npm run setup
-  ```
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/yourusername/grapple-logic.git
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Start the development server:
+   ```sh
+   npm run dev
+   ```
 
-- Start dev server:
+## Usage
 
-  ```sh
-  npm run dev
-  ```
+- **Web Interface**: Navigate to the main page to access your lesson plans, upcoming reviews, and progress stats.
+- **Add Techniques**: Add new techniques directly via the dashboard.
+- **Track Progress**: View insights about mastered techniques and areas that need more work.
 
-This starts your app in development mode, rebuilding assets on file changes.
+## FAQ
 
-The database seed script creates a new user with some data you can use to get started:
+- **How long does it take to see results?**\
+  Users typically start seeing improvement in 3-4 weeks of consistent training with Grapple Logic.
 
-- Email: `rachel@remix.run`
-- Password: `racheliscool`
+- **Do I need to train every day?**\
+  No, Grapple Logic adapts to your training frequency, making sure you progress at your own pace.
 
-### Relevant code:
+## Contributing
 
-This is a pretty simple note-taking app, but it's a good example of how you can build a full stack app with Prisma and Remix. The main functionality is creating users, logging in and out, and creating and deleting notes.
+We welcome contributions! Please follow these steps:
 
-- creating users, and logging in and out [./app/models/user.server.ts](./app/models/user.server.ts)
-- user sessions, and verifying them [./app/session.server.ts](./app/session.server.ts)
-- creating, and deleting notes [./app/models/note.server.ts](./app/models/note.server.ts)
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes and commit them (`git commit -m 'Add new feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Open a pull request.
 
-## Deployment
+## License
 
-This Remix Stack comes with two GitHub Actions that handle automatically deploying your app to production and staging environments.
+This project is currently licensed under the MIT License.. Please note that Grapple Logic may offer premium features or become a paid service in the future.
 
-Prior to your first deployment, you'll need to do a few things:
+## Contact
 
-- [Install Fly](https://fly.io/docs/getting-started/installing-flyctl/)
+For more information, visit [Grapple Logic](https://www.grapplelogic.com) or contact us at [support@grapplelogic.com](mailto\:support@grapplelogic.com).
 
-- Sign up and log in to Fly
-
-  ```sh
-  fly auth signup
-  ```
-
-  > **Note:** If you have more than one Fly account, ensure that you are signed into the same account in the Fly CLI as you are in the browser. In your terminal, run `fly auth whoami` and ensure the email matches the Fly account signed into the browser.
-
-- Create two apps on Fly, one for staging and one for production:
-
-  ```sh
-  fly apps create grapple-logic-fed5
-  fly apps create grapple-logic-fed5-staging
-  ```
-
-  > **Note:** Make sure this name matches the `app` set in your `fly.toml` file. Otherwise, you will not be able to deploy.
-
-  - Initialize Git.
-
-  ```sh
-  git init
-  ```
-
-- Create a new [GitHub Repository](https://repo.new), and then add it as the remote for your project. **Do not push your app yet!**
-
-  ```sh
-  git remote add origin <ORIGIN_URL>
-  ```
-
-- Add a `FLY_API_TOKEN` to your GitHub repo. To do this, go to your user settings on Fly and create a new [token](https://web.fly.io/user/personal_access_tokens/new), then add it to [your repo secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) with the name `FLY_API_TOKEN`.
-
-- Add a `SESSION_SECRET` to your fly app secrets, to do this you can run the following commands:
-
-  ```sh
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app grapple-logic-fed5
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app grapple-logic-fed5-staging
-  ```
-
-  If you don't have openssl installed, you can also use [1Password](https://1password.com/password-generator) to generate a random secret, just replace `$(openssl rand -hex 32)` with the generated secret.
-
-- Create a persistent volume for the sqlite database for both your staging and production environments. Run the following:
-
-  ```sh
-  fly volumes create data --size 1 --app grapple-logic-fed5
-  fly volumes create data --size 1 --app grapple-logic-fed5-staging
-  ```
-
-Now that everything is set up you can commit and push your changes to your repo. Every commit to your `main` branch will trigger a deployment to your production environment, and every commit to your `dev` branch will trigger a deployment to your staging environment.
-
-### Connecting to your database
-
-The sqlite database lives at `/data/sqlite.db` in your deployed application. You can connect to the live database by running `fly ssh console -C database-cli`.
-
-### Getting Help with Deployment
-
-If you run into any issues deploying to Fly, make sure you've followed all of the steps above and if you have, then post as many details about your deployment (including your app name) to [the Fly support community](https://community.fly.io). They're normally pretty responsive over there and hopefully can help resolve any of your deployment issues and questions.
-
-## GitHub Actions
-
-We use GitHub Actions for continuous integration and deployment. Anything that gets into the `main` branch will be deployed to production after running tests/build/etc. Anything in the `dev` branch will be deployed to staging.
-
-## Testing
-
-### Cypress
-
-We use Cypress for our End-to-End tests in this project. You'll find those in the `cypress` directory. As you make changes, add to an existing file or create a new file in the `cypress/e2e` directory to test your changes.
-
-We use [`@testing-library/cypress`](https://testing-library.com/cypress) for selecting elements on the page semantically.
-
-To run these tests in development, run `npm run test:e2e:dev` which will start the dev server for the app as well as the Cypress client. Make sure the database is running in docker as described above.
-
-We have a utility for testing authenticated features without having to go through the login flow:
-
-```ts
-cy.login();
-// you are now logged in as a new user
-```
-
-We also have a utility to auto-delete the user at the end of your test. Just make sure to add this in each test file:
-
-```ts
-afterEach(() => {
-  cy.cleanupUser();
-});
-```
-
-That way, we can keep your local db clean and keep your tests isolated from one another.
-
-### Vitest
-
-For lower level tests of utilities and individual components, we use `vitest`. We have DOM-specific assertion helpers via [`@testing-library/jest-dom`](https://testing-library.com/jest-dom).
-
-### Type Checking
-
-This project uses TypeScript. It's recommended to get TypeScript set up for your editor to get a really great in-editor experience with type checking and auto-complete. To run type checking across the whole project, run `npm run typecheck`.
-
-### Linting
-
-This project uses ESLint for linting. That is configured in `.eslintrc.js`.
-
-### Formatting
-
-We use [Prettier](https://prettier.io/) for auto-formatting in this project. It's recommended to install an editor plugin (like the [VSCode Prettier plugin](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) to get auto-formatting on save. There's also a `npm run format` script you can run to format all files in the project.
