@@ -22,8 +22,8 @@ export function GrowthChartIcon() {
       <svg className="absolute inset-0 h-full w-full">
         <defs>
           <linearGradient id="purpleBeltGradient" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor="#66bb6a" /> {/* Light green */}
-            <stop offset="100%" stopColor="#2e7d32" /> {/* Dark green */}
+            <stop offset="0%" stopColor="#ffffff" /> {/* Light green */}
+            <stop offset="100%" stopColor="#c4c4c4" /> {/* Dark green */}
           </linearGradient>
         </defs>
       </svg>
@@ -54,8 +54,8 @@ export function ScienceBeakerIcon() {
       <svg className="absolute inset-0 h-full w-full">
         <defs>
           <linearGradient id="redBeltGradient" gradientTransform="rotate(90)">
-            <stop offset="0%" stopColor="#FF6347" />
-            <stop offset="100%" stopColor="#B22222" />
+            <stop offset="0%" stopColor="#ad83ff" />
+            <stop offset="100%" stopColor="#7d3aff" />
           </linearGradient>
         </defs>
       </svg>

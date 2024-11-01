@@ -1,8 +1,10 @@
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { User } from '@prisma/client'
 import { NavLink } from '@remix-run/react'
 import { useState } from 'react'
 
+import logoImgAssetUrl from 'app/assets/grapple-logic-logo.svg'
 import heroImgAssetUrl from 'app/assets/hero.png'
 
 import GlassCard from '../GlassCard'
@@ -16,7 +18,7 @@ const navigation = [
     { name: 'Company', href: '#' },
 ]
 
-export default function HeroSection({user}) {
+export default function HeroSection({user}: {user: User | null}) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (
@@ -24,11 +26,11 @@ export default function HeroSection({user}) {
             <header className="absolute inset-x-0 top-0 z-50">
                 <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
                     <div className="flex lg:flex-1">
-                        <a href="#" className="-m-1.5 p-1.5">
-                            <span className="sr-only">Your Company</span>
+                        <a href="/" className="-m-1.5 p-1.5">
+                            <span className="sr-only">Grapple Logic</span>
                             <img
-                                alt=""
-                                src={heroImgAssetUrl}
+                                alt="grapple logic logo"
+                                src={logoImgAssetUrl}
                                 className="h-8 w-auto"
                             />
                         </a>
@@ -72,11 +74,11 @@ export default function HeroSection({user}) {
                     <div className="fixed inset-0 z-50" />
                     <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-900 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-white/10">
                         <div className="flex items-center justify-between">
-                            <a href="#" className="-m-1.5 p-1.5">
-                                <span className="sr-only">Your Company</span>
+                            <a href="/" className="-m-1.5 p-1.5">
+                                <span className="sr-only">Grapple Logic</span>
                                 <img
-                                    alt=""
-                                    src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
+                                    alt="grapple logic logo"
+                                    src={logoImgAssetUrl}
                                     className="h-8 w-auto"
                                 />
                             </a>
@@ -128,7 +130,7 @@ export default function HeroSection({user}) {
                 <div className="mx-auto max-w-7xl px-6 lg:px-8">
                     <div className="mx-auto max-w-2xl py-8 sm:py-12 lg:py-14">
                         <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-                            <div className="relative rounded-md px-3 py-1 text-sm/6 text-gray-100 ring-1 ring-white/70 hover:ring-white/20 bg-white/10 backdrop-blur-md border border-white/20 shadow-md">
+                            <div className="relative rounded-md px-3 py-1 text-sm/6 text-gray-100 ring-1 ring-white/50 hover:ring-white/20 bg-white/10 backdrop-blur-md border border-white/20 shadow-md">
                                 <span className='flex justify-between w-54 gap-2'>
                                     <SparklesGradientIcon />{'  '}Trusted By Champions
                                 </span>
@@ -152,7 +154,7 @@ export default function HeroSection({user}) {
                             </div>
                         </div>
                     </div>
-                        <div id="feature-cards" className='grid grid-cols-3 gap-3 mb-8'>
+                        <div id="feature-cards" className='grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8'>
                             <GlassCard icon={GrowthChartIcon} heading="Built For Growth" text="Whether you're a white belt starting out or a seasoned competitor, Grapple Logic adapts to your level to help you retain more and improve consistently." />
                             <GlassCard icon={SmartCalendarIcon} heading="Smart Scheduling" text="Train smarter, not harder. Grapple Logic generates lesson plans that revisit essential techniques at optimal intervals to engrain them in your muscle memory." />
                             <GlassCard icon={ScienceBeakerIcon} heading="Backed By Science" text="Visualize your journey from beginner to expert. Our science-backed spaced repetition algorithm highlights the optimal times to revisit techniques, ensuring you retain what you learn, making every training session count." />
