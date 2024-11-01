@@ -18,7 +18,7 @@ const navigation = [
     { name: 'Company', href: '#' },
 ]
 
-export default function HeroSection({user}: {user: User | null}) {
+export default function HeroSection({user}: {user: User | undefined}) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (

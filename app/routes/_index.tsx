@@ -1,6 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 
+import FeatureSection from "~/components/landing/FeaturesSection";
 import HeroSection from "~/components/landing/Hero";
 import { useOptionalUser } from "~/utils";
 
@@ -12,6 +13,7 @@ export default function Index() {
   return (
     <main>
       <HeroSection user={user}/>
+      <FeatureSection />
     </main>
   );
 }
