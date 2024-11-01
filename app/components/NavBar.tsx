@@ -26,11 +26,13 @@ export default function NavBar() {
                             </DisclosureButton>
                         </div>
                         <div className="flex flex-shrink-0 items-center">
-                            <img
-                                alt="Grapple Logic"
-                                src={logoAssetUrl}
-                                className="h-8 w-auto"
-                            />
+                            <NavLink to="/">
+                                <img
+                                    alt="Grapple Logic"
+                                    src={logoAssetUrl}
+                                    className="h-8 w-auto"
+                                />
+                            </NavLink>
                         </div>
                         <div className="hidden md:ml-6 md:flex md:space-x-8">
                             <NavLink

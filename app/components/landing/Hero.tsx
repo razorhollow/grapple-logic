@@ -12,9 +12,8 @@ import { SparklesGradientIcon, ScienceBeakerIcon, SmartCalendarIcon, GrowthChart
 
 
 const navigation = [
-    { name: 'Product', href: '#' },
-    { name: 'Features', href: '#' },
-    { name: 'Marketplace', href: '#' },
+    { name: 'Features', href: '#features' },
+    { name: 'Frequently Asked Questions', href: '#faq' },
     { name: 'Company', href: '#' },
 ]
 
@@ -95,22 +94,30 @@ export default function HeroSection({user}: {user: User | undefined}) {
                             <div className="-my-6 divide-y divide-gray-500/25">
                                 <div className="space-y-2 py-6">
                                     {navigation.map((item) => (
-                                        <a
+                                        <NavLink
                                             key={item.name}
-                                            href={item.href}
+                                            to={item.href}
+                                            onClick={() => setMobileMenuOpen(false)}
                                             className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-gray-800"
                                         >
                                             {item.name}
-                                        </a>
+                                        </NavLink>
                                     ))}
                                 </div>
                                 <div className="py-6">
+                                    {user ? (
+                                        <NavLink to="/calendar" className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-gray-800">
+                                            Go To Dashboard
+                                        </NavLink>
+                                     ) : (
                                     <NavLink
                                         to="/login"
                                         className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-white hover:bg-gray-800"
                                     >
                                         Sign in
                                     </NavLink>
+                                     )
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -145,10 +152,10 @@ export default function HeroSection({user}: {user: User | undefined}) {
                                 Unlock your true potential with Grapple Logic, the lesson planning app powered by cutting-edge science to effectively reinforce techniques and drills. Grapple Logic ensures you never forget a move by optimizing your training sessions and mastering new techniques faster.
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
-                                <NavLink to="/register" className="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400">
+                                <NavLink to={user ? "/calendar" : "/join"} className="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400">
                                     Get started
                                 </NavLink>
-                                <NavLink to="#" className="text-sm/6 font-semibold text-blue-300 ring-1 ring-blue-500/70 hover:ring-blue-400/90 border-blue-500 rounded-md px-3.5 py-2">
+                                <NavLink to="#features" className="text-sm/6 font-semibold text-blue-300 ring-1 ring-blue-500/70 hover:ring-blue-400/90 border-blue-500 rounded-md px-3.5 py-2">
                                     Learn more
                                 </NavLink>
                             </div>
