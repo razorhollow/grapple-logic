@@ -1,4 +1,4 @@
-import { VideoCameraIcon } from "@heroicons/react/24/outline"; // Optional: for better class concatenation
+import { ChevronDownIcon, VideoCameraIcon } from "@heroicons/react/24/outline"; // Optional: for better class concatenation
 import clsx from "clsx";
 
 import { Badge } from "./ui/badge";
@@ -46,7 +46,7 @@ export default function LessonItem({ technique, date }: LessonItemProps) {
     <Collapsible className="w-full my-2">
       <CollapsibleTrigger className={clsx(triggerBgClass, "rounded-lg p-2 w-full h-16")}>
         <div className="flex justify-between w-full">
-          <p>{technique.name}</p>
+          <p className="flex gap-2 items-center">{technique.name} <ChevronDownIcon height={24}/></p>
           <Badge variant="secondary">
             {technique.category}
           </Badge>
