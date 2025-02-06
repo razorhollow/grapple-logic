@@ -21,10 +21,12 @@ import { cn } from "app/lib/utils"
 
 export default function ComboboxCategories({ 
     categories, 
-    defaultValue = "" 
+    defaultValue = "",
+    error 
 }: { 
     categories: string[];
     defaultValue?: string;
+    error?: string;
 }) {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState(defaultValue)
@@ -51,7 +53,7 @@ export default function ComboboxCategories({
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full justify-between"
+                    className={`w-full justify-between ${error ? 'border-red-500' : ''}`}
                 >
                     {value
                         ? categories.find((category) => category === value) || customValue

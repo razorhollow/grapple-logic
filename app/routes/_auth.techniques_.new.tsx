@@ -100,6 +100,15 @@ export default function AddTechnique() {
             formRef.current?.reset();
             techniqueNameRef.current?.focus();
             toast.success(actionData.message);
+        } else if (actionData?.errors) {
+            // Show error toast for form-level errors
+            if (actionData.errors._form) {
+                toast.error(actionData.errors._form);
+            }
+            // Show validation errors
+            else if (Object.keys(actionData.errors).length > 0) {
+                toast.error("Please fix the validation errors");
+            }
         }
     }, [actionData]);
 
@@ -153,9 +162,7 @@ export default function AddTechnique() {
                             }`}
                         />
                     </label>
-                    {actionData?.errors?.name && (
-                        <p className="text-red-500 text-sm mt-1">{actionData.errors.name}</p>
-                    )}
+                    {actionData?.errors?.name ? <p className="text-red-500 text-sm mt-1">{actionData.errors.name}</p> : null}
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
@@ -168,21 +175,15 @@ export default function AddTechnique() {
                             }`}
                         />
                     </label>
-                    {actionData?.errors?.description && (
-                        <p className="text-red-500 text-sm mt-1">{actionData.errors.description}</p>
-                    )}
+                    {actionData?.errors?.description ? <p className="text-red-500 text-sm mt-1">{actionData.errors.description}</p> : null}
                 </div>
-                {/* <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                        Category
-                        <input
-                            type="text"
-                            name="category"
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        />
-                    </label>
-                </div> */}
-                <ComboboxCategories categories={categoryList.filter(category => category !== null) as string[]} />
+                <div>
+                    <ComboboxCategories 
+                        categories={categoryList.filter(category => category !== null) as string[]} 
+                        error={actionData?.errors?.category}
+                    />
+                    {actionData?.errors?.category ? <p className="text-red-500 text-sm mt-1">{actionData.errors.category}</p> : null}
+                </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
                         Video Link (Optional)
@@ -263,9 +264,7 @@ export default function AddTechnique() {
                     </Button>
                 </div>
 
-                {actionData?.errors?._form && (
-                    <p className="text-red-500 text-center">{actionData.errors._form}</p>
-                )}
+                {actionData?.errors?._form ? <p className="text-red-500 text-center">{actionData.errors._form}</p> : null}
             </Form>
         </div>
     );

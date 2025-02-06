@@ -11,7 +11,9 @@ export default function PaginationFooter({pageCount}: PaginationFooterProps) {
             <PaginationContent>
                 {Array.from({ length: pageCount }).map((_, i) => (
                     <PaginationItem key={i}>
-                        <PaginationLink to={`/techniques?page=${i + 1}`} end>{i + 1}</PaginationLink>
+                        <PaginationLink to={`/techniques?page=${i + 1}`}>
+                            {i + 1}
+                        </PaginationLink>
                     </PaginationItem>
                 ))}
             </PaginationContent>
