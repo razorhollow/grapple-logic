@@ -1,6 +1,5 @@
 import { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, Link, useSearchParams } from '@remix-run/react';
-import { CalendarIcon, SparklesIcon, TagIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
 
 import PaginationFooter from '~/components/Pagination';
@@ -11,19 +10,51 @@ import { requireUserId } from '~/session.server';
 const PER_PAGE = 12
 
 export async function loader({ request }: LoaderFunctionArgs) {
-    await requireUserId(request);
+    const userId = await requireUserId(request);
+    console.log("Current userId:", userId, typeof userId);
+
+    // First, verify the user exists
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: { techniques: true }
+    });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
     const url = new URL(request.url);
-    const query = url.searchParams
-    const currentPage = Math.max(Number(query.get('page')) || 1, 1)
+    const query = url.searchParams;
+    const currentPage = Math.max(Number(query.get('page')) || 1, 1);
+
     const options = {
+        where: {
+            userId: {
+                equals: userId
+            }
+        },
         orderBy: { lastIntroduced: 'desc' as const },
         take: PER_PAGE,
         skip: (currentPage - 1) * PER_PAGE,
-        include: { tags: true }, // Include tags for search
-    }
+        include: { tags: true },
+    };
 
     const techniques = await prisma.technique.findMany(options);
-    const count = await prisma.technique.count();
+    console.log("User techniques count:", user.techniques.length);
+    console.log("Query result count:", techniques.length);
+    
+    if (techniques.length > 0) {
+        console.log("Sample technique userId:", techniques[0].userId, typeof techniques[0].userId);
+    }
+
+    const count = await prisma.technique.count({
+        where: {
+            userId: {
+                equals: userId
+            }
+        },
+    });
+
     return { techniques, count };
 }
 
