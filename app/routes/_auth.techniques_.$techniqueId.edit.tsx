@@ -121,6 +121,7 @@ export default function EditTechnique() {
     const [newTagName, setNewTagName] = useState('');
     const [isCreatingTag, setIsCreatingTag] = useState(false);
     const [imageInputs, setImageInputs] = useState([{ id: 0 }]);
+    const [compressionProgress, setCompressionProgress] = useState<Record<number, number>>({});
 
     const handleCreateTag = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -306,6 +307,11 @@ export default function EditTechnique() {
                                         file:bg-blue-50 file:text-blue-700
                                         hover:file:bg-blue-100"
                                 />
+                                {compressionProgress[input.id] && compressionProgress[input.id] < 100 && (
+                                    <span className="text-sm text-gray-500">
+                                        Compressing: {compressionProgress[input.id]}%
+                                    </span>
+                                )}
                                 {imageInputs.length > 1 ? <Button
                                         type="button"
                                         onClick={() => removeImageInput(input.id)}
