@@ -2,11 +2,15 @@ import { ArrowPathIcon, ChevronLeftIcon, PencilIcon } from "@heroicons/react/24/
 import { Technique } from "@prisma/client";
 import { redirect, ActionFunctionArgs } from "@remix-run/node";
 import { Form, NavLink, useNavigate, useOutletContext } from "@remix-run/react";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 
 import { Button } from "~/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import { recycleTechnique } from "~/models/technique.server";
 import { requireUserId } from "~/session.server";
+import { prisma } from "~/db.server";
 
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
@@ -23,15 +27,39 @@ export async function action({ request }: ActionFunctionArgs) {
     return redirect('/calendar');
 }
 
-export default function TechniqueDetails() {
-    const context = useOutletContext<{ 
-        technique: Pick<Technique, "name" | "category" | "lastIntroduced" | "description" | "videoLink" | "id" | "lastIntroduced"> & {
-            tags?: { id: number; name: string; }[]
-        }
-    }>();
-    const { technique } = context;
-    const navigate = useNavigate();
+export async function loader({ request, params }: LoaderFunctionArgs) {
+    const { techniqueId } = params;
+    const userId = await requireUserId(request);
 
+    if (!techniqueId) {
+        throw new Response("Technique Id required", { status: 404 });
+    }
+
+    const technique = await prisma.technique.findUnique({
+        where: { 
+            id: parseInt(techniqueId),
+            userId 
+        },
+        include: {
+            tags: true,
+            references: {
+                orderBy: {
+                    createdAt: 'asc'
+                }
+            }
+        }
+    });
+
+    if (!technique) {
+        throw new Response("Technique not found", { status: 404 });
+    }
+
+    return json({ technique });
+}
+
+export default function TechniqueDetails() {
+    const { technique } = useOutletContext<typeof loader>();
+    const navigate = useNavigate();
     
     const handleClick = () => {
         navigate(-1);
@@ -78,6 +106,31 @@ export default function TechniqueDetails() {
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Video Link</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{technique.videoLink ? <NavLink to={technique.videoLink}>{technique.videoLink}</NavLink> : "No Video Available"}</dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt className="text-sm font-medium leading-6 text-gray-900">Reference Images</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {technique.references.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {technique.references.map((ref) => (
+                                <div key={ref.id} className="relative rounded-lg overflow-hidden border border-gray-200">
+                                    <img
+                                        src={ref.imageUrl}
+                                        alt={ref.caption || 'Technique reference'}
+                                        className="w-full h-auto max-h-[400px] object-contain bg-gray-50"
+                                    />
+                                    {ref.caption && (
+                                        <div className="p-2 bg-gray-50 border-t border-gray-200">
+                                            <p className="text-sm text-gray-600">{ref.caption}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500 italic">No reference images available</p>
+                    )}
+                </dd>
               </div>
             </dl>
           </div>

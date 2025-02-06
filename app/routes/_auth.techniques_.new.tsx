@@ -2,11 +2,14 @@ import { ActionFunctionArgs, json, redirect } from '@remix-run/node';
 import { Form, NavLink, useActionData, useLoaderData, useNavigation } from '@remix-run/react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import ComboboxCategories from '~/components/ComboBox';
 import { Button } from '~/components/ui/button';
 import { createTechnique, getCategories, getTags } from '~/models/technique.server';
 import { requireUserId } from '~/session.server';
+import { uploadToCloudinary } from '~/utils/cloudinary.server';
+import { prisma } from '~/db.server';
 
 interface FormErrors {
     name?: string;
@@ -39,6 +42,10 @@ export async function action({ request }: ActionFunctionArgs) {
     const userId = await requireUserId(request);
     const intent = formData.get('intent');
     const tagIds = formData.getAll('tagIds') as string[];
+    
+    // Get all images and captions
+    const images = formData.getAll('images') as File[];
+    const captions = formData.getAll('captions') as string[];
 
     const errors: FormErrors = {};
 
@@ -59,7 +66,8 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     try {
-        await createTechnique({
+        // Create technique first
+        const technique = await createTechnique({
             name: name as string,
             description: description as string,
             category: category as string,
@@ -68,6 +76,22 @@ export async function action({ request }: ActionFunctionArgs) {
             userId,
             tagIds,
         });
+
+        // Handle image uploads
+        const imagePromises = images
+            .filter(image => image.size > 0) // Filter out empty file inputs
+            .map(async (image, index) => {
+                const imageUrl = await uploadToCloudinary(image);
+                return prisma.techniqueReference.create({
+                    data: {
+                        techniqueId: technique.id,
+                        imageUrl,
+                        caption: captions[index] || null
+                    }
+                });
+            });
+
+        await Promise.all(imagePromises);
 
         if (intent === 'save-and-close') {
             return redirect('/techniques');
@@ -78,6 +102,7 @@ export async function action({ request }: ActionFunctionArgs) {
             { status: 200 }
         );
     } catch (error) {
+        console.error('Error creating technique:', error);
         return json(
             { errors: { _form: "Failed to create technique" } },
             { status: 500 }
@@ -94,6 +119,7 @@ export default function AddTechnique() {
     const techniqueNameRef = useRef<HTMLInputElement>(null);
     const [newTagName, setNewTagName] = useState('');
     const [isCreatingTag, setIsCreatingTag] = useState(false);
+    const [imageInputs, setImageInputs] = useState([{ id: 0 }]);
 
     useEffect(() => {
         if (actionData?.success) {
@@ -146,10 +172,18 @@ export default function AddTechnique() {
         }
     };
 
+    const addImageInput = () => {
+        setImageInputs([...imageInputs, { id: imageInputs.length }]);
+    };
+
+    const removeImageInput = (id: number) => {
+        setImageInputs(imageInputs.filter(input => input.id !== id));
+    };
+
     return (
         <div className="max-w-md mx-auto mt-10">
             <h1 className="text-xl font-bold mb-4">Add New Technique</h1>
-            <Form ref={formRef} method="post" className="space-y-4">
+            <Form ref={formRef} method="post" className="space-y-4" encType="multipart/form-data">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
                         Technique Name
@@ -244,6 +278,56 @@ export default function AddTechnique() {
                         ))}
                     </select>
                     <span className="text-sm text-gray-500">Hold Ctrl/Cmd to select multiple tags</span>
+                </div>
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <label className="block text-sm font-medium text-gray-700">
+                            Reference Images
+                        </label>
+                        <Button
+                            type="button"
+                            onClick={addImageInput}
+                            variant="outline"
+                            size="sm"
+                        >
+                            <PlusIcon className="h-4 w-4 mr-2" />
+                            Add Image
+                        </Button>
+                    </div>
+
+                    {imageInputs.map((input) => (
+                        <div key={input.id} className="space-y-2 p-4 border rounded-md">
+                            <div className="flex justify-between items-center">
+                                <input
+                                    type="file"
+                                    name="images"
+                                    accept="image/*"
+                                    className="block w-full text-sm text-gray-500
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-full file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-blue-50 file:text-blue-700
+                                        hover:file:bg-blue-100"
+                                />
+                                {imageInputs.length > 1 && (
+                                    <Button
+                                        type="button"
+                                        onClick={() => removeImageInput(input.id)}
+                                        variant="ghost"
+                                        size="sm"
+                                    >
+                                        <XMarkIcon className="h-4 w-4" />
+                                    </Button>
+                                )}
+                            </div>
+                            <input
+                                type="text"
+                                name="captions"
+                                placeholder="Image caption (optional)"
+                                className="w-full border border-gray-300 rounded-md p-2"
+                            />
+                        </div>
+                    ))}
                 </div>
                 <div className='flex justify-between'>
                     <Button variant="destructive" asChild><NavLink to="/techniques">Cancel</NavLink></Button>
