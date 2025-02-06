@@ -1,5 +1,7 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { useLoaderData, Form, useActionData } from '@remix-run/react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 import ComboboxCategories from '~/components/ComboBox';
 import { Button } from '~/components/ui/button';
@@ -65,6 +67,40 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export default function EditTechnique() {
     const { technique, categoryList, tags } = useLoaderData<typeof loader>();
     const actionData = useActionData<typeof action>();
+    const [newTagName, setNewTagName] = useState('');
+    const [isCreatingTag, setIsCreatingTag] = useState(false);
+
+    const handleCreateTag = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newTagName.trim()) {
+            toast.error("Tag name cannot be empty");
+            return;
+        }
+
+        setIsCreatingTag(true);
+        try {
+            const response = await fetch('/api/tags', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: newTagName }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to create tag');
+            }
+
+            toast.success('Tag created successfully');
+            setNewTagName('');
+            window.location.reload();
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to create tag');
+        } finally {
+            setIsCreatingTag(false);
+        }
+    };
 
     return (
         <div className="max-w-md mx-auto mt-10">
@@ -92,7 +128,10 @@ export default function EditTechnique() {
                         ></textarea>
                     </label>
                 </div>
-                <ComboboxCategories categories={categoryList.filter(category => category !== null) as string[]} />
+                <ComboboxCategories 
+                    categories={categoryList.filter(category => category !== null) as string[]} 
+                    defaultValue={technique.category || ''}
+                />
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
                         Video Link (Optional)
@@ -118,6 +157,25 @@ export default function EditTechnique() {
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
                         Tags
+                        <div className="flex gap-2 mb-2 mt-1">
+                            <input
+                                type="text"
+                                value={newTagName}
+                                onChange={(e) => setNewTagName(e.target.value)}
+                                placeholder="New tag name"
+                                className="flex-1 border border-gray-300 rounded-md p-2"
+                                disabled={isCreatingTag}
+                            />
+                            <Button
+                                type="button"
+                                onClick={handleCreateTag}
+                                variant="outline"
+                                size="sm"
+                                disabled={isCreatingTag}
+                            >
+                                {isCreatingTag ? 'Adding...' : 'Add Tag'}
+                            </Button>
+                        </div>
                         <select
                             multiple
                             name="tagIds"
