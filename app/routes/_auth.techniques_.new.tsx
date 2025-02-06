@@ -1,19 +1,32 @@
-import { ActionFunctionArgs, redirect, json } from '@remix-run/node';
+import { ActionFunctionArgs, json, redirect } from '@remix-run/node';
 import { Form, NavLink, useActionData, useLoaderData, useNavigation } from '@remix-run/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import ComboboxCategories from '~/components/ComboBox';
 import { Button } from '~/components/ui/button';
-import { createTechnique, getCategories } from '~/models/technique.server';
+import { createTechnique, getCategories, getTags } from '~/models/technique.server';
 import { requireUserId } from '~/session.server';
 
+interface FormErrors {
+    name?: string;
+    description?: string;
+    category?: string;
+    _form?: string;
+}
+
+interface ActionData {
+    success?: boolean;
+    message?: string;
+    errors?: FormErrors;
+}
 
 export async function loader() {
     const categories = await getCategories();
-    //create an array from the values of the object
+    const tags = await getTags();
     const categoryList = categories.map((item) => item.category);
 
-    return { categoryList };
+    return { categoryList, tags };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -25,46 +38,104 @@ export async function action({ request }: ActionFunctionArgs) {
     const lastIntroduced = new Date(formData.get('lastIntroduced') as string) || new Date();
     const userId = await requireUserId(request);
     const intent = formData.get('intent');
+    const tagIds = formData.getAll('tagIds') as string[];
+
+    const errors: FormErrors = {};
 
     if (typeof name !== 'string' || name.trim() === '') {
-        return json({ error: 'Technique name is required' }, { status: 400 });
+        errors.name = 'Technique name is required';
     }
 
-    if (typeof description !== 'string') {
-        return json({ error: 'Technique description is required' }, { status: 400 });
+    if (typeof description !== 'string' || description.trim() === '') {
+        errors.description = 'Technique description is required';
     }
 
     if (typeof category !== 'string' || category.trim() === '') {
-        return json({ error: 'Category is required' }, { status: 400 });
+        errors.category = 'Category is required';
     }
 
-    await createTechnique({
-        name,
-        description,
-        category,
-        videoLink,
-        lastIntroduced,
-        userId,
-    });
+    if (Object.keys(errors).length > 0) {
+        return json({ errors }, { status: 400 });
+    }
 
-    if (intent === 'save-and-close') return redirect('/calendar');
+    try {
+        await createTechnique({
+            name: name as string,
+            description: description as string,
+            category: category as string,
+            videoLink,
+            lastIntroduced,
+            userId,
+            tagIds,
+        });
 
-    return redirect('/techniques/new');
+        if (intent === 'save-and-close') {
+            return redirect('/techniques');
+        }
+
+        return json(
+            { success: true, message: "Technique created successfully" },
+            { status: 200 }
+        );
+    } catch (error) {
+        return json(
+            { errors: { _form: "Failed to create technique" } },
+            { status: 500 }
+        );
+    }
 }
 
 export default function AddTechnique() {
-    const actionData = useActionData<typeof action>();
-    const { categoryList } = useLoaderData <typeof loader>();
-    const navigation = useNavigation()
-    const isAdding = navigation.state === 'submitting'
-    const formRef = useRef<HTMLFormElement>(null)
-    const techniqueNameRef = useRef<HTMLInputElement>(null)
+    const actionData = useActionData<ActionData>();
+    const { categoryList, tags } = useLoaderData<typeof loader>();
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === 'submitting';
+    const formRef = useRef<HTMLFormElement>(null);
+    const techniqueNameRef = useRef<HTMLInputElement>(null);
+    const [newTagName, setNewTagName] = useState('');
+    const [isCreatingTag, setIsCreatingTag] = useState(false);
 
     useEffect(() => {
-        if (!isAdding) {
-            formRef.current?.reset()}
-            techniqueNameRef.current?.focus()
-    }, [isAdding])
+        if (actionData?.success) {
+            formRef.current?.reset();
+            techniqueNameRef.current?.focus();
+            toast.success(actionData.message);
+        }
+    }, [actionData]);
+
+    const handleCreateTag = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newTagName.trim()) {
+            toast.error("Tag name cannot be empty");
+            return;
+        }
+
+        setIsCreatingTag(true);
+        try {
+            const response = await fetch('/api/tags', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: newTagName }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to create tag');
+            }
+
+            const result = await response.json();
+            toast.success('Tag created successfully');
+            setNewTagName('');
+            // Reload the page to get updated tags
+            window.location.reload();
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to create tag');
+        } finally {
+            setIsCreatingTag(false);
+        }
+    };
 
     return (
         <div className="max-w-md mx-auto mt-10">
@@ -77,9 +148,14 @@ export default function AddTechnique() {
                             ref={techniqueNameRef}
                             type="text"
                             name="name"
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                            className={`mt-1 block w-full border rounded-md p-2 ${
+                                actionData?.errors?.name ? 'border-red-500' : 'border-gray-300'
+                            }`}
                         />
                     </label>
+                    {actionData?.errors?.name && (
+                        <p className="text-red-500 text-sm mt-1">{actionData.errors.name}</p>
+                    )}
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
@@ -87,9 +163,14 @@ export default function AddTechnique() {
                         <textarea
                             name="description"
                             rows={5}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        ></textarea>
+                            className={`mt-1 block w-full border rounded-md p-2 ${
+                                actionData?.errors?.description ? 'border-red-500' : 'border-gray-300'
+                            }`}
+                        />
                     </label>
+                    {actionData?.errors?.description && (
+                        <p className="text-red-500 text-sm mt-1">{actionData.errors.description}</p>
+                    )}
                 </div>
                 {/* <div>
                     <label className="block text-sm font-medium text-gray-700">
@@ -123,16 +204,68 @@ export default function AddTechnique() {
                         />
                     </label>
                 </div>
-                {actionData?.error ? <p className="text-red-500">{actionData.error}</p> : null}
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Tags
+                    </label>
+                    
+                    {/* Add new tag form */}
+                    <div className="flex gap-2 mb-2">
+                        <input
+                            type="text"
+                            value={newTagName}
+                            onChange={(e) => setNewTagName(e.target.value)}
+                            placeholder="New tag name"
+                            className="flex-1 border border-gray-300 rounded-md p-2"
+                            disabled={isCreatingTag}
+                        />
+                        <Button
+                            type="button"
+                            onClick={handleCreateTag}
+                            variant="outline"
+                            size="sm"
+                            disabled={isCreatingTag}
+                        >
+                            {isCreatingTag ? 'Adding...' : 'Add Tag'}
+                        </Button>
+                    </div>
+
+                    {/* Existing tag select */}
+                    <select
+                        multiple
+                        name="tagIds"
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    >
+                        {tags.map((tag) => (
+                            <option key={tag.id} value={tag.id}>
+                                {tag.name}
+                            </option>
+                        ))}
+                    </select>
+                    <span className="text-sm text-gray-500">Hold Ctrl/Cmd to select multiple tags</span>
+                </div>
                 <div className='flex justify-between'>
                     <Button variant="destructive" asChild><NavLink to="/techniques">Cancel</NavLink></Button>
-                    <Button name='intent' value="save-and-close" variant='outline'>
-                        Add and Close
+                    <Button 
+                        name='intent' 
+                        value="save-and-close" 
+                        variant='outline'
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Adding...' : 'Add and Close'}
                     </Button>
-                    <Button name='intent' value="save-and-add-another">
-                        Add and Continue
+                    <Button 
+                        name='intent' 
+                        value="save-and-add-another"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Adding...' : 'Add and Continue'}
                     </Button>
                 </div>
+
+                {actionData?.errors?._form && (
+                    <p className="text-red-500 text-center">{actionData.errors._form}</p>
+                )}
             </Form>
         </div>
     );

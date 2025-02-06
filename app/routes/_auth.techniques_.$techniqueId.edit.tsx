@@ -4,21 +4,22 @@ import { useLoaderData, Form, useActionData } from '@remix-run/react';
 import ComboboxCategories from '~/components/ComboBox';
 import { Button } from '~/components/ui/button';
 import { prisma } from '~/db.server';
-import { getCategories } from '~/models/technique.server';
+import { getCategories, getTags } from '~/models/technique.server';
 
 export async function loader({ params }: LoaderFunctionArgs) {
     const technique = await prisma.technique.findUnique({
         where: { id: Number(params.techniqueId) },
+        include: { tags: true },
     });
 
     if (!technique) {
         throw new Response('Technique not found', { status: 404 });
     }
     const categories = await getCategories();
-    //create an array from the values of the object
+    const tags = await getTags();
     const categoryList = categories.map((item) => item.category);
 
-    return { technique, categoryList };
+    return { technique, categoryList, tags };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -29,37 +30,40 @@ export async function action({ request, params }: ActionFunctionArgs) {
     const category = formData.get('category') as string | null;
     const videoLink = formData.get('videoLink') as string | null;
     const lastIntroduced = new Date(formData.get('lastIntroduced') as string) || new Date();
+    const tagIds = formData.getAll('tagIds') as string[];
 
     if (typeof name !== 'string' || name.trim() === '') {
         return { error: 'Technique name is required' };
     }
 
     if (intent === 'save') {
+        await prisma.technique.update({
+            where: { id: Number(params.techniqueId) },
+            data: {
+                name,
+                description,
+                category,
+                videoLink,
+                lastIntroduced,
+                tags: {
+                    set: tagIds.map(id => ({ id })),
+                },
+            },
+        });
 
-    await prisma.technique.update({
-        where: { id: Number(params.techniqueId) },
-        data: {
-            name,
-            description,
-            category,
-            videoLink,
-            lastIntroduced,
-        },
-    });
-
-    return redirect('/techniques');
-}
-if (intent === 'delete') {
-    await prisma.technique.delete({
-        where: { id: Number(params.techniqueId) },
-    });
-}
+        return redirect('/techniques');
+    }
+    if (intent === 'delete') {
+        await prisma.technique.delete({
+            where: { id: Number(params.techniqueId) },
+        });
+    }
 
     return redirect('/techniques');
 }
 
 export default function EditTechnique() {
-    const {technique, categoryList} = useLoaderData<typeof loader>();
+    const { technique, categoryList, tags } = useLoaderData<typeof loader>();
     const actionData = useActionData<typeof action>();
 
     return (
@@ -111,9 +115,27 @@ export default function EditTechnique() {
                         />
                     </label>
                 </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                        Tags
+                        <select
+                            multiple
+                            name="tagIds"
+                            defaultValue={technique.tags.map(t => t.id)}
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        >
+                            {tags.map((tag) => (
+                                <option key={tag.id} value={tag.id}>
+                                    {tag.name}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                    <span className="text-sm text-gray-500">Hold Ctrl/Cmd to select multiple tags</span>
+                </div>
                 {actionData?.error ? <p className="text-red-500">{actionData.error}</p> : null}
                 <Button
-                    variant="default"                                                                                                                                                           
+                    variant="default"
                     name='intent'
                     value='save'
                     type="submit"
@@ -122,9 +144,9 @@ export default function EditTechnique() {
                     Update Technique
                 </Button>
                 <Button
-                variant="destructive"
-                name='intent'
-                value='delete'
+                    variant="destructive"
+                    name='intent'
+                    value='delete'
                     type="submit"
                     className="w-full"
                 >

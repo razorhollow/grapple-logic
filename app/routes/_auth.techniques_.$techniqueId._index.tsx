@@ -24,7 +24,11 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function TechniqueDetails() {
-    const context = useOutletContext<{ technique: Pick<Technique, "name" | "category" | "lastIntroduced" | "description" | "videoLink" | "id" | "lastIntroduced"> }>();
+    const context = useOutletContext<{ 
+        technique: Pick<Technique, "name" | "category" | "lastIntroduced" | "description" | "videoLink" | "id" | "lastIntroduced"> & {
+            tags?: { id: number; name: string; }[]
+        }
+    }>();
     const { technique } = context;
     const navigate = useNavigate();
 
@@ -44,6 +48,21 @@ export default function TechniqueDetails() {
                 <dt className="text-sm font-medium leading-6 text-gray-900">Category</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{technique.category}</dd>
               </div>
+              {technique.tags && technique.tags.length > 0 ? <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt className="text-sm font-medium leading-6 text-gray-900">Tags</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                        <div className="flex flex-wrap gap-2">
+                            {technique.tags.map((tag) => (
+                                <span
+                                    key={tag.id}
+                                    className="inline-flex items-center px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
+                                >
+                                    {tag.name}
+                                </span>
+                            ))}
+                        </div>
+                    </dd>
+                </div> : null}
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Description and Notes</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">

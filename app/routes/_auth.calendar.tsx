@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import { Calendar } from "~/components/ui/calendar";
 
-
 export default function CalendarRoute() {
     const [date, setDate] = useState<Date | undefined>(new Date())
     const navigate = useNavigate()
@@ -14,18 +13,18 @@ export default function CalendarRoute() {
         navigate(`/calendar/${formattedDate}`)
     }
 
-  return (
-    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-      <Calendar
-        mode="single"
-        required
-        selected={date}
-        onSelect={handleSelect}
-        className="rounded-md border mx-auto mt-10"
-      />
-      <div className="">
-        <Outlet />
-      </div>
-    </div>
-  );
+    return (
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Calendar
+                mode="single"
+                required
+                selected={date}
+                onSelect={handleSelect}
+                className="rounded-md border mx-auto mt-10"
+            />
+            <div className="">
+                <Outlet />
+            </div>
+        </div>
+    );
 }

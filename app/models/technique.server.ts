@@ -19,8 +19,10 @@ export function createTechnique({
     videoLink,
     lastIntroduced,
     userId,
+    tagIds,
 }: Pick<Technique, "category" | "name" | "description" | "lastIntroduced" | "userId" | "videoLink"> & {
     userId: User["id"];
+    tagIds?: string[];
 }) {
     return prisma.technique.create({
         data: {
@@ -29,6 +31,9 @@ export function createTechnique({
             category,
             videoLink,
             lastIntroduced,
+            tags: {
+                connect: tagIds?.map(id => ({ id })) || [],
+            },
             user: {
                 connect: {
                     id: userId,
@@ -80,13 +85,18 @@ export function getCategories() {
 export function getTechnique({
     id,
     userId,
+    includeTags = false,
 }: Pick<Technique, "id"> & {
     userId: User["id"];
+    includeTags?: boolean;
 }) {
     return prisma.technique.findFirst({
         where: {
             id: id,
             userId,
+        },
+        include: {
+            tags: includeTags,
         },
     });
 }
@@ -106,6 +116,22 @@ export function recycleTechnique({
         },
         data: {
             lastIntroduced,
+        },
+    });
+}
+
+export function createTag(name: string) {
+    return prisma.tag.create({
+        data: {
+            name,
+        },
+    });
+}
+
+export function getTags() {
+    return prisma.tag.findMany({
+        orderBy: {
+            name: 'asc',
         },
     });
 }
